@@ -1,14 +1,15 @@
 import { fontFace, IFontWeight } from '@uifabric/merge-styles';
-import { IFontStyles } from '../interfaces/index';
-import { createFontStyles, FontWeights, LocalizedFontFamilies, LocalizedFontNames } from './fonts';
+import { IFontStyles, ITypography } from '../interfaces/index';
+import { createFontStyles, FontWeights, LocalizedFontFamilies, LocalizedFontNames, createTypography } from './fonts';
 import { getLanguage } from '@uifabric/utilities';
 import { IFabricConfig } from '../interfaces/IFabricConfig';
 
 // Default urls.
 const DefaultBaseUrl = 'https://static2.sharepointonline.com/files/fabric/assets';
 
-// Standard font styling.
-export const DefaultFontStyles: IFontStyles = createFontStyles(getLanguage());
+// Standard font styling, typography and older font styles objects
+export const DefaultTypography: ITypography = createTypography(getLanguage());
+export const DefaultFontStyles: IFontStyles = createFontStyles(DefaultTypography);
 
 function _registerFontFace(fontFamily: string, url: string, fontWeight?: IFontWeight, localFontName?: string): void {
   fontFamily = `'${fontFamily}'`;
@@ -33,19 +34,9 @@ function _registerFontFaceSet(
   const urlBase = `${baseUrl}/${cdnFolder}/${cdnFontName}`;
 
   _registerFontFace(fontFamily, urlBase + '-light', FontWeights.light, localFontName && localFontName + ' Light');
-  _registerFontFace(
-    fontFamily,
-    urlBase + '-semilight',
-    FontWeights.semilight,
-    localFontName && localFontName + ' SemiLight'
-  );
+  _registerFontFace(fontFamily, urlBase + '-semilight', FontWeights.semilight, localFontName && localFontName + ' SemiLight');
   _registerFontFace(fontFamily, urlBase + '-regular', FontWeights.regular, localFontName);
-  _registerFontFace(
-    fontFamily,
-    urlBase + '-semibold',
-    FontWeights.semibold,
-    localFontName && localFontName + ' SemiBold'
-  );
+  _registerFontFace(fontFamily, urlBase + '-semibold', FontWeights.semibold, localFontName && localFontName + ' SemiBold');
 }
 
 export function registerDefaultFontFaces(baseUrl: string): void {

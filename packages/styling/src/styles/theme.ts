@@ -1,20 +1,23 @@
 import { Customizations, merge } from '@uifabric/utilities';
 import { IPalette, ISemanticColors, ITheme, IPartialTheme, ISemanticTextColors } from '../interfaces/index';
 import { ITypography, IPartialTypography, IFontVariant } from '../interfaces/ITypography';
-import { DefaultFontStyles } from './DefaultFontStyles';
+import { DefaultFontStyles, DefaultTypography } from './DefaultFontStyles';
 import { DefaultPalette } from './DefaultPalette';
 import { DefaultSpacing } from './DefaultSpacing';
-import { DefaultTypography } from './DefaultTypography';
 import { loadTheme as legacyLoadTheme } from '@microsoft/load-themed-styles';
 
-let _theme: ITheme = createTheme({
+// Platform default values to use as a hidden parent theme
+const platformDefaultTheme: ITheme = {
   palette: DefaultPalette,
   semanticColors: _makeSemanticColorsFromPalette(DefaultPalette, false, false),
   fonts: DefaultFontStyles,
   isInverted: false,
   typography: DefaultTypography,
+  spacing: DefaultSpacing,
   disableGlobalClassNames: false
-});
+};
+let _theme: ITheme = createTheme({});
+
 let _onThemeChangeCallbacks: Array<(theme: ITheme) => void> = [];
 
 export const ThemeSettingName = 'theme';
@@ -38,6 +41,7 @@ if (!Customizations.getSettings([ThemeSettingName]).theme) {
  */
 export function getTheme(depComments: boolean = false): ITheme {
   if (depComments === true) {
+    // this will recreate the theme every time, also it will stomp any customizations applied above
     _theme = createTheme({}, depComments);
   }
   return _theme;
@@ -92,59 +96,48 @@ export function loadTheme(theme: IPartialTheme, depComments: boolean = false): I
 }
 
 /**
+ * Return a fully resolved theme given a parent theme and a partial specificaton
+ * @param theme Partial theme specification, properties in here will be applied on top of the parent
+ * @param parent Fully specified parent theme, this will be used as the baseline and will not be modified
+ * @param depComments Whether to insert comments in deprecated properties
+ */
+export function createLayeredTheme(theme: IPartialTheme, parent: ITheme, depComments: boolean = false): ITheme {
+  // patch the palette and boolean flags
+  const palette: IPalette = Object.assign({}, parent.palette, theme.palette);
+  if (!theme.palette || !theme.palette.accent) {
+    palette.accent = palette.themePrimary;
+  }
+
+  const isInverted: boolean = (typeof theme.isInverted !== 'undefined' && theme.isInverted) || parent.isInverted;
+  const disableGlobalClassNames: boolean =
+    (typeof theme.disableGlobalClassNames !== 'undefined' && theme.disableGlobalClassNames) || parent.disableGlobalClassNames;
+
+  // semantic colors need to be updated if the palette was set or if deprecated comments are being added
+  const updateSemantic: boolean = !!theme.palette || depComments;
+  const baseSemanticColors: ISemanticColors = updateSemantic
+    ? _makeSemanticColorsFromPalette(palette, isInverted, depComments)
+    : parent.semanticColors;
+  const semanticColors: ISemanticColors = Object.assign({}, baseSemanticColors, theme.semanticColors);
+
+  // build the merged object and return it
+  return {
+    palette,
+    semanticColors,
+    isInverted,
+    disableGlobalClassNames,
+    fonts: Object.assign({}, parent.fonts, theme.fonts),
+    typography: merge<ITypography>({}, parent.typography, theme.typography as ITypography),
+    spacing: Object.assign({}, parent.spacing, theme.spacing)
+  };
+}
+
+/**
  * Creates a custom theme definition which can be used with the Customizer.
  * @param {object} theme - Partial theme object.
  * @param {boolean} depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function createTheme(theme: IPartialTheme, depComments: boolean = false): ITheme {
-  let newPalette = { ...DefaultPalette, ...theme.palette };
-
-  if (!theme.palette || !theme.palette.accent) {
-    newPalette.accent = newPalette.themePrimary;
-  }
-
-  // mix in custom overrides with good slots first, since custom overrides might be used in fixing deprecated slots
-  let newSemanticColors = {
-    ..._makeSemanticColorsFromPalette(newPalette, !!theme.isInverted, depComments),
-    ...theme.semanticColors
-  };
-
-  const typography = merge<ITypography>({}, DefaultTypography, theme.typography as ITypography);
-  const { variants } = typography;
-
-  for (const variantName in variants) {
-    if (variants.hasOwnProperty(variantName)) {
-      const variant: IFontVariant = {
-        ...variants.default,
-        ...variants[variantName]
-      };
-
-      variant.family = _expandFrom(variant.family, typography.families);
-      variant.size = _expandFrom(variant.size, typography.sizes);
-      variant.weight = _expandFrom(variant.weight, typography.weights);
-      variant.color = _expandFrom(variant.color, newSemanticColors);
-      variant.hoverColor = _expandFrom(variant.hoverColor, newSemanticColors);
-      variant.disabledColor = _expandFrom(variant.disabledColor, newSemanticColors);
-
-      variants[variantName] = variant;
-    }
-  }
-
-  return {
-    palette: newPalette,
-    fonts: {
-      ...DefaultFontStyles,
-      ...theme.fonts
-    },
-    semanticColors: newSemanticColors,
-    isInverted: !!theme.isInverted,
-    disableGlobalClassNames: !!theme.disableGlobalClassNames,
-    typography: typography as ITypography,
-    spacing: {
-      ...DefaultSpacing,
-      ...theme.spacing
-    }
-  };
+  return createLayeredTheme(theme, platformDefaultTheme, depComments);
 }
 
 /**

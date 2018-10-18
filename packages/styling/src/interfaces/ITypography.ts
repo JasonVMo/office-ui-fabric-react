@@ -5,7 +5,9 @@ import { ISemanticTextColors } from './ISemanticTextColors';
  * @internal This is an experimental interface and will be changed post design review.
  */
 export interface IFontFamilies {
-  default: string;
+  standard: string;
+  heading: string;
+  semilight: string;
   monospace: string;
 }
 
@@ -22,6 +24,7 @@ export interface IFontSizes {
   large: string;
   xLarge: string;
   xxLarge: string;
+  superLarge: string;
   mega: string;
 }
 
@@ -29,9 +32,9 @@ export interface IFontSizes {
  * @internal This is an experimental interface and will be changed post design review.
  */
 export interface IFontWeights {
-  default: IFontWeight;
   light: IFontWeight;
-  regular: IFontWeight;
+  semilight: IFontWeight;
+  medium: IFontWeight;
   semibold: IFontWeight;
   bold: IFontWeight;
 }
@@ -40,26 +43,38 @@ export interface IFontWeights {
  * @internal This is an experimental interface and will be changed post design review.
  */
 export interface IFontVariant {
-  family: keyof IFontFamilies | string;
-  size: keyof IFontSizes | number | string;
-  weight: keyof IFontWeights | number;
-  color?: keyof ISemanticTextColors;
-  hoverColor?: keyof ISemanticTextColors;
-  disabledColor?: keyof ISemanticTextColors;
+  fontFamily: keyof IFontFamilies | string;
+  fontSize: keyof IFontSizes | number | string;
+  fontWeight: keyof IFontWeights | number;
+}
+
+/**
+ * @internal This is an experimental interface and will be changed post design review.
+ */
+export interface IFontChoice extends Partial<IFontVariant> {
+  fontVariant?: keyof IFontVariants;
 }
 
 /**
  * @internal This is an experimental interface and will be changed post design review.
  */
 export interface IFontVariants {
-  default: Partial<IFontVariant>;
+  // size based variants
+  tiny: Partial<IFontVariant>;
+  xSmall: Partial<IFontVariant>;
+  small: Partial<IFontVariant>;
+  smallPlus: Partial<IFontVariant>;
+  standard: Partial<IFontVariant>;
+  standardPlus: Partial<IFontVariant>;
+  large: Partial<IFontVariant>;
+  xLarge: Partial<IFontVariant>;
+  xxLarge: Partial<IFontVariant>;
+  superLarge: Partial<IFontVariant>;
+  mega: Partial<IFontVariant>;
+
+  // role based variants
   caption: Partial<IFontVariant>;
   link: Partial<IFontVariant>;
-  h1: Partial<IFontVariant>;
-  h2: Partial<IFontVariant>;
-  h3: Partial<IFontVariant>;
-  h4: Partial<IFontVariant>;
-  h5: Partial<IFontVariant>;
 }
 
 /**

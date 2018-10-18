@@ -1,6 +1,7 @@
 import { registerOnThemeChangeCallback, removeOnThemeChangeCallback, loadTheme, createTheme } from './theme';
-import { DefaultTypography } from './DefaultTypography';
 import { IPartialTheme, ITypography } from '../interfaces/index';
+import { DefaultTypography } from './DefaultFontStyles';
+import { resolveFontChoice } from './fonts';
 
 describe('registerOnThemeChangeCallback', () => {
   let callback = jest.fn();
@@ -38,11 +39,10 @@ describe('theme.typography', () => {
     const userTheme: IPartialTheme = {
       typography: {
         variants: {
-          default: {
-            family: 'monospace',
-            size: 'small',
-            weight: 'bold',
-            color: 'link'
+          standard: {
+            fontFamily: 'monospace',
+            fontSize: 'small',
+            fontWeight: 'bold'
           }
         }
       }
@@ -50,21 +50,23 @@ describe('theme.typography', () => {
 
     const newTheme = createTheme(userTheme);
 
-    expect(newTheme.typography.variants.default.size).toEqual(DefaultTypography.sizes.small);
+    const fontStyle = resolveFontChoice({}, newTheme.typography);
+    expect(fontStyle.fontSize).toEqual(DefaultTypography.sizes.small);
   });
 
   it('updates the variants when sizes are adjusted', () => {
     const userTheme = {
       typography: {
         sizes: {
-          [DefaultTypography.variants.default.size!]: '100px'
+          [DefaultTypography.variants.standard.fontSize!]: '100px'
         }
       }
     } as IPartialTheme;
 
     const newTheme = createTheme(userTheme);
 
-    expect(newTheme.typography.variants.default.size).toEqual('100px');
+    const fontStyle = resolveFontChoice({}, newTheme.typography);
+    expect(fontStyle.fontSize).toEqual('100px');
   });
 
   it('does not modify DefaultTypography when given a theme with no typography', () => {

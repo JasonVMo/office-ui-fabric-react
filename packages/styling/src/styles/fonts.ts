@@ -1,5 +1,7 @@
 import { IRawStyle, IFontWeight } from '@uifabric/merge-styles';
-import { IFontStyles } from '../interfaces/index';
+import { IFontStyles, ITypography, IFontFamilies } from '../interfaces/index';
+import { DefaultFontVariants } from './DefaultTypography';
+import { IFontChoice, IFontVariants, IFontVariant } from '../interfaces/ITypography';
 
 // Fallback fonts, if specified system or web fonts are unavailable.
 const FontFamilyFallbacks = `'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif`;
@@ -100,11 +102,7 @@ export namespace IconFontSizes {
   export const large = '20px';
 }
 
-function _fontFamilyWithFallbacks(fontFamily: string): string {
-  return `${fontFamily}, ${FontFamilyFallbacks}`;
-}
-
-export function createFontStyles(localeCode: string | null): IFontStyles {
+function _getFontFamilies(localeCode: string | null): IFontFamilies {
   const localizedFont = _getLocalizedFontFamily(localeCode);
   let fontFamilyWithFallback = _fontFamilyWithFallbacks(localizedFont);
   let semilightFontFamilyWithFallback = fontFamilyWithFallback;
@@ -114,18 +112,33 @@ export function createFontStyles(localeCode: string | null): IFontStyles {
     semilightFontFamilyWithFallback = _fontFamilyWithFallbacks(LocalizedFontFamilies.WestEuropean);
   }
 
+  return {
+    standard: fontFamilyWithFallback,
+    heading: fontFamilyWithFallback,
+    semilight: semilightFontFamilyWithFallback,
+    monospace: 'Menlo, Monaco, "Courier New", monospace'
+  };
+}
+
+function _fontFamilyWithFallbacks(fontFamily: string): string {
+  return `${fontFamily}, ${FontFamilyFallbacks}`;
+}
+
+export function createFontStyles(typography: ITypography): IFontStyles {
+  const families = typography.families;
+
   const fontStyles = {
-    tiny: _createFont(FontSizes.mini, FontWeights.semibold, fontFamilyWithFallback),
-    xSmall: _createFont(FontSizes.xSmall, FontWeights.regular, fontFamilyWithFallback),
-    small: _createFont(FontSizes.small, FontWeights.regular, fontFamilyWithFallback),
-    smallPlus: _createFont(FontSizes.smallPlus, FontWeights.regular, fontFamilyWithFallback),
-    medium: _createFont(FontSizes.medium, FontWeights.regular, fontFamilyWithFallback),
-    mediumPlus: _createFont(FontSizes.mediumPlus, FontWeights.regular, fontFamilyWithFallback),
-    large: _createFont(FontSizes.large, FontWeights.semilight, semilightFontFamilyWithFallback),
-    xLarge: _createFont(FontSizes.xLarge, FontWeights.light, fontFamilyWithFallback),
-    xxLarge: _createFont(FontSizes.xxLarge, FontWeights.light, fontFamilyWithFallback),
-    superLarge: _createFont(FontSizes.superLarge, FontWeights.light, fontFamilyWithFallback),
-    mega: _createFont(FontSizes.mega, FontWeights.light, fontFamilyWithFallback)
+    tiny: _createFont(FontSizes.mini, FontWeights.semibold, families.standard),
+    xSmall: _createFont(FontSizes.xSmall, FontWeights.regular, families.standard),
+    small: _createFont(FontSizes.small, FontWeights.regular, families.standard),
+    smallPlus: _createFont(FontSizes.smallPlus, FontWeights.regular, families.standard),
+    medium: _createFont(FontSizes.medium, FontWeights.regular, families.standard),
+    mediumPlus: _createFont(FontSizes.mediumPlus, FontWeights.regular, families.standard),
+    large: _createFont(FontSizes.large, FontWeights.semilight, families.semilight),
+    xLarge: _createFont(FontSizes.xLarge, FontWeights.light, families.standard),
+    xxLarge: _createFont(FontSizes.xxLarge, FontWeights.light, families.standard),
+    superLarge: _createFont(FontSizes.superLarge, FontWeights.light, families.standard),
+    mega: _createFont(FontSizes.mega, FontWeights.light, families.standard)
   };
 
   return fontStyles;
@@ -152,5 +165,60 @@ function _createFont(size: string, weight: IFontWeight, fontFamily: string): IRa
     WebkitFontSmoothing: 'antialiased',
     fontSize: size,
     fontWeight: weight
+  };
+}
+
+/**
+ * This can be used in two ways.  The default behavior is onlySpecified being falsy.  In this mode
+ * a full font definition will be provided falling back to the standard font variant, patched with
+ * any overriden font variants, then patched with specified properties such as family.
+ *
+ * If onlySpecified is true this will exclude the font smoothing settings and only provide result
+ * values for things that are set in the fontChoice.  This is designed to produce the minimum set
+ * of properties to apply on top of a base definition.
+ *
+ * @param font specified font settings, variant, family, etc
+ * @param typography current typography settings for the current theme/scheme
+ * @param onlySpecified if specified and true, this will not assume a baseline font variant and will
+ * only return values for things specified in the font choice.  If font is empty, it will return an
+ * empty IRawStyle
+ */
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle {
+  const variants = typography.variants;
+  const variant = fontChoice.fontVariant;
+  const font = Object.assign({}, (variant || !onlySpecified) && variants.standard, variant && variants[variant], fontChoice);
+  const families = typography.families;
+  return {
+    ...(!onlySpecified && { MozOsxFontSmoothing: 'grayscale', WebkitFontSmoothing: 'antialiased' }),
+    ...(font.fontFamily && { fontFamily: typography.families[font.fontFamily] || font.fontFamily }),
+    ...(font.fontSize && { fontSize: typography.sizes[font.fontSize] || font.fontSize }),
+    ...(font.fontWeight && { fontWeight: typography.weights[font.fontWeight] || font.fontWeight })
+  };
+}
+
+export function createTypography(localeCode: string | null): ITypography {
+  return {
+    families: _getFontFamilies(localeCode),
+    sizes: {
+      mini: FontSizes.mini,
+      xSmall: FontSizes.xSmall,
+      small: FontSizes.small,
+      smallPlus: FontSizes.smallPlus,
+      medium: FontSizes.medium,
+      mediumPlus: FontSizes.mediumPlus,
+      large: FontSizes.large,
+      xLarge: FontSizes.xLarge,
+      xxLarge: FontSizes.xxLarge,
+      superLarge: FontSizes.superLarge,
+      mega: FontSizes.mega
+    },
+    weights: {
+      light: FontWeights.light,
+      semilight: FontWeights.semilight,
+      medium: FontWeights.regular,
+      semibold: FontWeights.semibold,
+      bold: FontWeights.bold
+    },
+    variants: DefaultFontVariants
   };
 }

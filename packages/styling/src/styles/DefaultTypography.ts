@@ -1,77 +1,53 @@
-import { DefaultFontStyles } from './DefaultFontStyles';
-import { FontSizes, FontWeights } from './fonts';
-import { IFontFamilies, IFontSizes, IFontWeights, IFontVariants, ITypography } from '../interfaces/ITypography';
-
-export const DefaultFontSizes: IFontSizes = {
-  mini: FontSizes.mini,
-  xSmall: FontSizes.xSmall,
-  small: FontSizes.small,
-  smallPlus: FontSizes.smallPlus,
-  medium: FontSizes.medium,
-  mediumPlus: FontSizes.mediumPlus,
-  large: FontSizes.large,
-  xLarge: FontSizes.xLarge,
-  xxLarge: FontSizes.xxLarge,
-  mega: FontSizes.mega
-};
-
-export const DefaultFontFamilies: IFontFamilies = {
-  default: DefaultFontStyles.medium.fontFamily!,
-  monospace: 'Menlo, Monaco, "Courier New", monospace'
-};
-
-export const DefaultFontWeights: IFontWeights = {
-  default: FontWeights.regular,
-  regular: FontWeights.regular,
-  light: FontWeights.light,
-  semibold: FontWeights.semibold,
-  bold: FontWeights.bold
-};
+import { IFontVariants } from '../interfaces/ITypography';
 
 export const DefaultFontVariants: IFontVariants = {
-  default: {
-    family: 'default',
-    size: 'inherit'
+  // size based variants
+  tiny: {
+    fontSize: 'mini',
+    fontWeight: 'semibold'
+  },
+  xSmall: {
+    fontSize: 'xSmall'
+  },
+  small: {
+    fontSize: 'small'
+  },
+  smallPlus: {
+    fontSize: 'smallPlus'
+  },
+  standard: {
+    fontFamily: 'standard',
+    fontSize: 'medium',
+    fontWeight: 'medium'
+  },
+  standardPlus: {
+    fontSize: 'mediumPlus'
+  },
+  large: {
+    fontFamily: 'semilight',
+    fontSize: 'large',
+    fontWeight: 'semilight'
+  },
+  xLarge: {
+    fontSize: 'xLarge',
+    fontWeight: 'light'
+  },
+  xxLarge: {
+    fontSize: 'xxLarge',
+    fontWeight: 'light'
+  },
+  superLarge: {
+    fontSize: 'superLarge',
+    fontWeight: 'light'
+  },
+  mega: {
+    fontSize: 'mega',
+    fontWeight: 'light'
   },
 
+  // role based variants
   caption: {
-    size: 'xSmall'
+    fontSize: 'xSmall'
   },
-
-  h1: {
-    size: 'mega',
-    weight: 'light'
-  },
-
-  h2: {
-    size: 'xxLarge',
-    weight: 'light'
-  },
-
-  h3: {
-    size: 'xLarge',
-    weight: 'light'
-  },
-
-  h4: {
-    size: 'large',
-    weight: 'light'
-  },
-
-  h5: {
-    size: 'mediumPlus',
-    weight: 'light'
-  },
-
-  link: {
-    color: 'link',
-    hoverColor: 'linkHovered'
-  }
-};
-
-export const DefaultTypography: ITypography = {
-  families: DefaultFontFamilies,
-  sizes: DefaultFontSizes,
-  weights: DefaultFontWeights,
-  variants: DefaultFontVariants
+  link: {}
 };
