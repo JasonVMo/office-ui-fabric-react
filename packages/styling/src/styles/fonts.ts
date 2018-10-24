@@ -168,6 +168,16 @@ function _createFont(size: string, weight: IFontWeight, fontFamily: string): IRa
   };
 }
 
+function _sanitizeObject(src: object): object {
+  const result = {};
+  for (const key in src) {
+    if (src.hasOwnProperty(key) && src[key] !== undefined && src[key] !== null) {
+      result[key] = src[key];
+    }
+  }
+  return result;
+}
+
 /**
  * This can be used in two ways.  The default behavior is onlySpecified being falsy.  In this mode
  * a full font definition will be provided falling back to the standard font variant, patched with
@@ -184,9 +194,10 @@ function _createFont(size: string, weight: IFontWeight, fontFamily: string): IRa
  * empty IRawStyle
  */
 export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle {
+  const input: IFontChoice = _sanitizeObject(fontChoice);
   const variants = typography.variants;
-  const variant = fontChoice.fontVariant;
-  const font = Object.assign({}, (variant || !onlySpecified) && variants.standard, variant && variants[variant], fontChoice);
+  const variant = input.fontVariant;
+  const font = Object.assign({}, (variant || !onlySpecified) && variants.standard, variant && variants[variant], input);
   const families = typography.families;
   return {
     ...(!onlySpecified && { MozOsxFontSmoothing: 'grayscale', WebkitFontSmoothing: 'antialiased' }),
