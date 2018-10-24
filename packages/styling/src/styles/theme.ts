@@ -37,7 +37,7 @@ if (!Customizations.getSettings([ThemeSettingName]).theme) {
 
 /**
  * Gets the theme object
- * @param {boolean} depComments - Whether to include deprecated tags as comments for deprecated slots.
+ * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function getTheme(depComments: boolean = false): ITheme {
   if (depComments === true) {
@@ -73,8 +73,8 @@ export function removeOnThemeChangeCallback(callback: (theme: ITheme) => void): 
 
 /**
  * Applies the theme, while filling in missing slots.
- * @param {object} theme - Partial theme object.
- * @param {boolean} depComments - Whether to include deprecated tags as comments for deprecated slots.
+ * @param theme - Partial theme object.
+ * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function loadTheme(theme: IPartialTheme, depComments: boolean = false): ITheme {
   _theme = createTheme(theme, depComments);
