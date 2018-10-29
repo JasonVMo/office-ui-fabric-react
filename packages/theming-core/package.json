@@ -1,7 +1,7 @@
 {
   "name": "@uifabric/theming-core",
   "version": "0.1.0",
-  "description": "Experimental React components for building experiences for Office 365.",
+  "description": "Theming interfaces and utilities",
   "main": "lib-commonjs/index.js",
   "module": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -43,7 +43,6 @@
   "dependencies": {
     "@microsoft/load-themed-styles": "^1.7.13",
     "@uifabric/set-version": ">=1.1.3 <2.0.0",
-    "office-ui-fabric-react": ">=6.84.1 <7.0.0",
     "tslib": "^1.7.1"
   },
   "peerDependencies": {

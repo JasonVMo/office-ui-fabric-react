@@ -1,17 +1,11 @@
 # [Office UI Fabric React ThemingCore](http://dev.microsoft.com/fabric)
 
-##### ThemingCore components for Office UI Fabric React
+##### ThemingCore interfaces and utilities for Office UI Fabric React
 
-These are not production ready components and __should never be used in product__. This ThemingCore space is useful for testing new components whose APIs might change before final release.
+These are not production read interfaces and __should never be used in product__.
 
-To import ThemingCore components:
-
-```js
-import { ComponentName } from '@uifabric/theming-core';
-```
-
-Once the ThemingCore component graduates to a production release, the component will be available at:
+To import ThemingCore interfaces:
 
 ```js
-import { ComponentName } from 'office-ui-fabric-react';
+import { InterfaceName } from '@uifabric/theming-core';
 ```
