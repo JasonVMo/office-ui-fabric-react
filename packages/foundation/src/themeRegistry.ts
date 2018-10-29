@@ -1,39 +1,44 @@
-export interface IThemeEntry<ITheme, IPartialTheme> {
+export interface IThemeEntry<ITheme, IThemeDefinition> {
   parent?: string;
-  definition?: IPartialTheme;
+  definition?: IThemeDefinition;
   resolved?: ITheme;
 }
 
-export interface IThemeGraphCore<ITheme, IPartialTheme> {
-  _platform: IThemeEntry<ITheme, IPartialTheme>;
-  default: IThemeEntry<ITheme, IPartialTheme>;
+export interface IThemeGraphCore<ITheme, IThemeDefinition> {
+  _platform: IThemeEntry<ITheme, IThemeDefinition>;
+  default: IThemeEntry<ITheme, IThemeDefinition>;
 }
 
 const _platformKey: keyof IThemeGraphCore<object, object> = '_platform';
 const _defaultKey: keyof IThemeGraphCore<object, object> = 'default';
 
-export interface IThemeGraph<ITheme, IPartialTheme> extends IThemeGraphCore<ITheme, IPartialTheme> {
-  [key: string]: IThemeEntry<ITheme, IPartialTheme>;
+export interface IThemeGraph<ITheme, IThemeDefinition> extends IThemeGraphCore<ITheme, IThemeDefinition> {
+  [key: string]: IThemeEntry<ITheme, IThemeDefinition>;
 }
 
-export type IRegisterTheme<IPartialTheme> = (definition: IPartialTheme, name?: string, parent?: string) => void;
+export type IRegisterTheme<IThemeDefinition> = (definition: IThemeDefinition, name?: string, parent?: string) => void;
 export type IGetTheme<ITheme> = (name?: string) => ITheme;
 export type IUpdatePlatformDefaults<ITheme> = (platformDefaults: ITheme) => void;
-export type IThemeResolver<ITheme, IPartialTheme> = (definition: IPartialTheme | undefined, parentTheme: ITheme) => ITheme;
+export type IThemeResolver<ITheme, IThemeDefinition> = (definition: IThemeDefinition | undefined, parentTheme: ITheme) => ITheme;
 
 /**
  * The theme registry is an object which tracks themes and their dependencies and updates them as
  * dependencies get updated.  The public interface are set as functions to encapsulate the type
- * information a single time when it is created.
+ * information a single time when it is created.  This is a generic object typed on ITheme and
+ * IThemeDefinition
+ *
+ * ITheme is designed to be a result value that can be queried from the theming system
+ * IThemeDefinition might be a partial theme, or even a different object entirely.  The only
+ * requirement is that (current IThemeDefinition + parent ITheme) => current ITheme
  */
-export interface IThemeRegistry<ITheme, IPartialTheme> {
+export interface IThemeRegistry<ITheme, IThemeDefinition> {
   /**
    * registerTheme will create or update a theme, associated with the given name,
    * optionally parented to parent.  If name is undefined this will update the default
    * theme definition.  The default theme is automatically parented to the platform
    * defaults.  If parent is omitted the theme will be parented to the default theme
    */
-  registerTheme: IRegisterTheme<IPartialTheme>;
+  registerTheme: IRegisterTheme<IThemeDefinition>;
 
   /**
    * get a theme by name, this will force the theme to be created and resolved if it is
@@ -51,7 +56,7 @@ export interface IThemeRegistry<ITheme, IPartialTheme> {
   /**
    * The actual graph of named themes
    */
-  graph: IThemeGraph<ITheme, IPartialTheme>;
+  graph: IThemeGraph<ITheme, IThemeDefinition>;
 }
 
 /**
@@ -61,31 +66,31 @@ export interface IThemeRegistry<ITheme, IPartialTheme> {
  * @param resolver A function which takes a partial theme, a fully defined parent theme, and
  * produces a fully resolved theme.
  */
-export function createThemeRegistry<ITheme, IPartialTheme>(
+export function createThemeRegistry<ITheme, IThemeDefinition>(
   platformDefaults: ITheme,
-  resolver: IThemeResolver<ITheme, IPartialTheme>
-): IThemeRegistry<ITheme, IPartialTheme> {
-  const graph: IThemeGraph<ITheme, IPartialTheme> = {
+  resolver: IThemeResolver<ITheme, IThemeDefinition>
+): IThemeRegistry<ITheme, IThemeDefinition> {
+  const graph: IThemeGraph<ITheme, IThemeDefinition> = {
     _platform: { resolved: platformDefaults },
     default: { parent: _platformKey }
   };
   return {
     graph,
-    registerTheme: (definition: IPartialTheme, name?: string, parent?: string): void => {
-      _registerTheme<ITheme, IPartialTheme>(graph, definition, name, parent);
+    registerTheme: (definition: IThemeDefinition, name?: string, parent?: string): void => {
+      _registerTheme<ITheme, IThemeDefinition>(graph, definition, name, parent);
     },
     getTheme: (name?: string): ITheme => {
-      return _getTheme<ITheme, IPartialTheme>(graph, resolver, name);
+      return _getTheme<ITheme, IThemeDefinition>(graph, resolver, name);
     },
     updatePlatformDefaults: (newDefaults: ITheme): void => {
-      _updatePlatformDefaults<ITheme, IPartialTheme>(graph, newDefaults);
+      _updatePlatformDefaults<ITheme, IThemeDefinition>(graph, newDefaults);
     }
   };
 }
 
-function _registerTheme<ITheme, IPartialTheme>(
-  graph: IThemeGraph<ITheme, IPartialTheme>,
-  definition: IPartialTheme,
+function _registerTheme<ITheme, IThemeDefinition>(
+  graph: IThemeGraph<ITheme, IThemeDefinition>,
+  definition: IThemeDefinition,
   name?: string,
   parent?: string
 ): void {
@@ -108,9 +113,9 @@ function _registerTheme<ITheme, IPartialTheme>(
   _clearDependentThemes(graph, name);
 }
 
-function _getTheme<ITheme, IPartialTheme>(
-  graph: IThemeGraph<ITheme, IPartialTheme>,
-  resolver: IThemeResolver<ITheme, IPartialTheme>,
+function _getTheme<ITheme, IThemeDefinition>(
+  graph: IThemeGraph<ITheme, IThemeDefinition>,
+  resolver: IThemeResolver<ITheme, IThemeDefinition>,
   name?: string
 ): ITheme {
   name = name || _defaultKey;
@@ -122,16 +127,16 @@ function _getTheme<ITheme, IPartialTheme>(
   return entry.resolved;
 }
 
-function _updatePlatformDefaults<ITheme, IPartialTheme>(
-  graph: IThemeGraph<ITheme, IPartialTheme>,
+function _updatePlatformDefaults<ITheme, IThemeDefinition>(
+  graph: IThemeGraph<ITheme, IThemeDefinition>,
   platformDefaults: ITheme
 ): void {
   graph._platform.resolved = platformDefaults;
   _clearDependentThemes(graph, _platformKey);
 }
 
-function _wouldCauseCycle<ITheme, IPartialTheme>(
-  graph: IThemeGraph<ITheme, IPartialTheme>,
+function _wouldCauseCycle<ITheme, IThemeDefinition>(
+  graph: IThemeGraph<ITheme, IThemeDefinition>,
   name: string,
   parent: string
 ): boolean {
@@ -142,13 +147,13 @@ function _wouldCauseCycle<ITheme, IPartialTheme>(
     if (par === name) {
       return true;
     }
-    const parentEntry: IThemeEntry<ITheme, IPartialTheme> | undefined = graph[par];
+    const parentEntry: IThemeEntry<ITheme, IThemeDefinition> | undefined = graph[par];
     par = (parentEntry && parentEntry.parent) || undefined;
   }
   return false;
 }
 
-function _clearDependentThemes<ITheme, IPartialTheme>(graph: IThemeGraph<ITheme, IPartialTheme>, parent: string): void {
+function _clearDependentThemes<ITheme, IThemeDefinition>(graph: IThemeGraph<ITheme, IThemeDefinition>, parent: string): void {
   for (const key in graph) {
     if (graph.hasOwnProperty(key)) {
       const entry = graph[key];
