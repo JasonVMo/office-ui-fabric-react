@@ -1,4 +1,3 @@
-import { assign } from '../utilities';
 import { COLOR_VALUES } from './colorValues';
 
 export const MAX_COLOR_SATURATION = 100;
@@ -190,51 +189,6 @@ export function getColorFromRGBA(rgba: { r: number; g: number; b: number; a: num
     str: a === 100 ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${a / 100})`,
     v: v
   };
-}
-
-export function getFullColorString(color: IColor): string {
-  return `#${hsv2hex(color.h, MAX_COLOR_SATURATION, MAX_COLOR_VALUE)}`;
-}
-
-export function updateSV(color: IColor, s: number, v: number): IColor {
-  const { r, g, b } = hsv2rgb(color.h, s, v);
-  const hex = rgb2hex(r, g, b);
-
-  return {
-    a: color.a,
-    b: b,
-    g: g,
-    h: color.h,
-    hex: hex,
-    r: r,
-    s: s,
-    str: color.a === 100 ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${(color.a as number) / 100})`,
-    v: v
-  };
-}
-
-export function updateH(color: IColor, h: number): IColor {
-  const { r, g, b } = hsv2rgb(h, color.s, color.v);
-  const hex = rgb2hex(r, g, b);
-
-  return {
-    a: color.a,
-    b: b,
-    g: g,
-    h: h,
-    hex: hex,
-    r: r,
-    s: color.s,
-    str: color.a === 100 ? `#${hex}` : `rgba(${r}, ${g}, ${b}, ${(color.a as number) / 100})`,
-    v: color.v
-  };
-}
-
-export function updateA(color: IColor, a: number): IColor {
-  return assign({}, color, {
-    a: a,
-    str: a === 100 ? `#${color.hex}` : `rgba(${color.r}, ${color.g}, ${color.b}, ${a / 100})`
-  });
 }
 
 function _numberToPaddedHex(num: number): string {
