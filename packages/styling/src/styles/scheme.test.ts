@@ -1,6 +1,6 @@
 import { getSchemedContext } from './scheme';
 import { createTheme } from './theme';
-import { IPartialTheme, ISchemeNames, ITheme, ITypography } from '../interfaces/index';
+import { ISchemeNames, ITheme } from '../interfaces/index';
 import { mergeCustomizations, ICustomizerContext } from '@uifabric/utilities';
 
 describe('getSchemedCustomizations', () => {

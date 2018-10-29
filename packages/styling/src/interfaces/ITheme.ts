@@ -1,8 +1,7 @@
-import { IPalette } from './IPalette';
 import { IFontStyles } from './IFontStyles';
 import { ISemanticColors } from './ISemanticColors';
-import { ITypography, IPartialTypography } from './ITypography';
 import { ISpacing } from './ISpacing';
+import { IThemeCore, IPartialThemeCore } from '@uifabric/foundation';
 
 /**
  * @internal
@@ -12,8 +11,7 @@ import { ISpacing } from './ISpacing';
  */
 export type ISchemeNames = 'default' | 'neutral' | 'soft' | 'strong';
 
-export interface IScheme {
-  palette: IPalette;
+export interface IScheme extends IThemeCore {
   fonts: IFontStyles;
   semanticColors: ISemanticColors;
   isInverted: boolean;
@@ -27,14 +25,6 @@ export interface IScheme {
    * Customizer will not get the global styles applied to them.
    */
   disableGlobalClassNames: boolean;
-
-  /**
-   * @internal
-   * The typography property is still in an experimental phase. The intent is to have it
-   * eventually replace IFontStyles in a future release, but it is still undergoing review.
-   * Avoid using it until it is finalized.
-   */
-  typography: ITypography;
 
   /**
    * @internal
@@ -55,10 +45,9 @@ export interface ITheme extends IScheme {
   schemes?: { [P in ISchemeNames]?: IScheme };
 }
 
-export type IPartialTheme = {
+export type IPartialTheme = IPartialThemeCore & {
   [P in keyof Pick<
-    ITheme,
-    'palette' | 'fonts' | 'semanticColors' | 'isInverted' | 'disableGlobalClassNames' | 'spacing' | 'schemes'
+  ITheme,
+  'fonts' | 'semanticColors' | 'isInverted' | 'disableGlobalClassNames' | 'spacing' | 'schemes'
   >]?: Partial<ITheme[P]>
-} &
-  { [P in keyof Pick<ITheme, 'typography'>]?: IPartialTypography };
+};

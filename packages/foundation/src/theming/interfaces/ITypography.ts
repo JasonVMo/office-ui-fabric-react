@@ -1,5 +1,4 @@
-import { IFontWeight } from '../MergeStyles';
-import { ISemanticTextColors } from './ISemanticTextColors';
+import { IFontWeight } from '@uifabric/merge-styles';
 
 /**
  * @internal This is an experimental interface and will be changed post design review.

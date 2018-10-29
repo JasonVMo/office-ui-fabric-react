@@ -1,6 +1,6 @@
 import { Customizations, merge } from '@uifabric/utilities';
-import { IPalette, ISemanticColors, ITheme, IPartialTheme, ISemanticTextColors } from '../interfaces/index';
-import { ITypography, IPartialTypography, IFontVariant } from '../interfaces/ITypography';
+import { ISemanticColors, ITheme, IPartialTheme } from '../interfaces/index';
+import { ITypography, IPalette } from '@uifabric/foundation';
 import { DefaultFontStyles, DefaultTypography } from './DefaultFontStyles';
 import { DefaultPalette } from './DefaultPalette';
 import { DefaultSpacing } from './DefaultSpacing';

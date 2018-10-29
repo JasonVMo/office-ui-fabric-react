@@ -1,7 +1,8 @@
 import { IRawStyle, IFontWeight } from '@uifabric/merge-styles';
-import { IFontStyles, ITypography, IFontFamilies } from '../interfaces/index';
+import { ITypography, IFontFamilies } from '@uifabric/foundation';
 import { DefaultFontVariants } from './DefaultTypography';
-import { IFontChoice, IFontVariants, IFontVariant } from '../interfaces/ITypography';
+import { IFontChoice } from '@uifabric/foundation';
+import { IFontStyles } from '../index';
 
 // Fallback fonts, if specified system or web fonts are unavailable.
 const FontFamilyFallbacks = `'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif`;

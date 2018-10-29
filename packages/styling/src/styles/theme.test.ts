@@ -1,5 +1,5 @@
 import { registerOnThemeChangeCallback, removeOnThemeChangeCallback, loadTheme, createTheme } from './theme';
-import { IPartialTheme, ITypography } from '../interfaces/index';
+import { IPartialTheme } from '../interfaces/index';
 import { DefaultTypography } from './DefaultFontStyles';
 import { resolveFontChoice } from './fonts';
 
