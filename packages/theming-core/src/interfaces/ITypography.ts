@@ -1,4 +1,4 @@
-import { IFontWeight } from 'office-ui-fabric-react';
+export type IFontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold';
 
 /**
  * @internal This is an experimental interface and will be changed post design review.
