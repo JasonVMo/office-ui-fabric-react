@@ -75,7 +75,7 @@ describe('theme registry tests', () => {
     registry.registerTheme({ val: 3 }, 'test');
     expect(registry.getTheme('test2').sum).toEqual(6);
     expect(registry.getTheme('test3').sum).toEqual(7);
-    expect(registry.getTheme()).toEqual(defTheme);
+    expect(registry.getTheme()).toBe(defTheme);
     expect(registry.getTheme('test').sum).toEqual(4);
   });
 
