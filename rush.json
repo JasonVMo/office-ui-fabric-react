@@ -163,6 +163,12 @@
       "projectFolder": "packages/fluent-theme",
       "versionPolicyName": "lockedMajor",
       "shouldPublish": true
+    },
+    {
+      "packageName": "@uifabric/theming-core",
+      "projectFolder": "packages/theming-core",
+      "versionPolicyName": "lockedMajor",
+      "shouldPublish": false
     }
   ]
 }
