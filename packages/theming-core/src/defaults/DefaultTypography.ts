@@ -1,4 +1,4 @@
-import { ITypography, IFontSizes, IFontWeights, IFontVariants, IFontFamilies } from '../interfaces';
+import { ITypography, IFontSizes, IFontWeights, IFontVariants, IFontFamilies } from '../interfaces/index';
 
 /**
  * fonts.ts in the styling package may have a nicer approach that uses locales to pull the correct font families

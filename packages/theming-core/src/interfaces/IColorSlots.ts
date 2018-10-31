@@ -1,4 +1,4 @@
-import { IPalette } from './';
+import { IPalette } from './index';
 
 /**
  * It is not quite clear how desirable such an interface is.
