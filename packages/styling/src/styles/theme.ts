@@ -97,9 +97,9 @@ export function loadTheme(theme: IPartialTheme, depComments: boolean = false): I
 
 /**
  * Return a fully resolved theme given a parent theme and a partial specificaton
- * @param theme Partial theme specification, properties in here will be applied on top of the parent
- * @param parent Fully specified parent theme, this will be used as the baseline and will not be modified
- * @param depComments Whether to insert comments in deprecated properties
+ * @param theme - Partial theme specification, properties in here will be applied on top of the parent
+ * @param parent - Fully specified parent theme, this will be used as the baseline and will not be modified
+ * @param depComments - Whether to insert comments in deprecated properties
  */
 export function createLayeredTheme(theme: IPartialTheme, parent: ITheme, depComments: boolean = false): ITheme {
   // patch the palette and boolean flags
@@ -133,8 +133,8 @@ export function createLayeredTheme(theme: IPartialTheme, parent: ITheme, depComm
 
 /**
  * Creates a custom theme definition which can be used with the Customizer.
- * @param {object} theme - Partial theme object.
- * @param {boolean} depComments - Whether to include deprecated tags as comments for deprecated slots.
+ * @param theme - Partial theme object.
+ * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function createTheme(theme: IPartialTheme, depComments: boolean = false): ITheme {
   return createLayeredTheme(theme, platformDefaultTheme, depComments);

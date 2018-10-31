@@ -7,7 +7,7 @@ export function buildClassMap<T>(styles: T): {
 export function concatStyleSets(...styleSets: (IStyleSet<any> | false | null | undefined)[]): IConcatenatedStyleSet<any>;
 
 // @public (undocumented)
-export function createFontStyles(localeCode: string | null): IFontStyles;
+export function createFontStyles(typography: ITypography): IFontStyles;
 
 // @public
 export function createTheme(theme: IPartialTheme, depComments?: boolean): ITheme;
@@ -92,14 +92,15 @@ export function getIcon(name?: string): IIconRecord | undefined;
 // @public
 export function getIconClassName(name: string): string;
 
-// @public
-export function getSchemedContext(scheme: ISchemeNames, context: ICustomizerContext, settingsTheme?: ITheme): ICustomizerContext | undefined;
-
 // @public (undocumented)
 export function getScreenSelector(min: number, max: number): string;
 
 // @public
 export function getTheme(depComments?: boolean): ITheme;
+
+// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
+// @internal
+export function getThemedContext(context: ICustomizerContext, scheme?: ISchemeNames, theme?: ITheme): ICustomizerContext;
 
 // @public
 interface IAnimationStyles {
@@ -220,40 +221,6 @@ interface IFontFace extends IRawFontStyle {
   unicodeRange?: ICSSRule | string;
 }
 
-// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-// @internal
-interface IFontFamilies {
-  // (undocumented)
-  default: string;
-  // (undocumented)
-  monospace: string;
-}
-
-// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-// @internal
-interface IFontSizes {
-  // (undocumented)
-  large: string;
-  // (undocumented)
-  medium: string;
-  // (undocumented)
-  mediumPlus: string;
-  // (undocumented)
-  mega: string;
-  // (undocumented)
-  mini: string;
-  // (undocumented)
-  small: string;
-  // (undocumented)
-  smallPlus: string;
-  // (undocumented)
-  xLarge: string;
-  // (undocumented)
-  xSmall: string;
-  // (undocumented)
-  xxLarge: string;
-}
-
 // @public
 interface IFontStyles {
   // (undocumented)
@@ -278,59 +245,6 @@ interface IFontStyles {
   xSmall: IRawStyle;
   // (undocumented)
   xxLarge: IRawStyle;
-}
-
-// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-// @internal
-interface IFontVariant {
-  // (undocumented)
-  color?: keyof ISemanticTextColors;
-  // (undocumented)
-  disabledColor?: keyof ISemanticTextColors;
-  // (undocumented)
-  family: keyof IFontFamilies | string;
-  // (undocumented)
-  hoverColor?: keyof ISemanticTextColors;
-  // (undocumented)
-  size: keyof IFontSizes | number | string;
-  // (undocumented)
-  weight: keyof IFontWeights | number;
-}
-
-// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-// @internal
-interface IFontVariants {
-  // (undocumented)
-  caption: Partial<IFontVariant>;
-  // (undocumented)
-  default: Partial<IFontVariant>;
-  // (undocumented)
-  h1: Partial<IFontVariant>;
-  // (undocumented)
-  h2: Partial<IFontVariant>;
-  // (undocumented)
-  h3: Partial<IFontVariant>;
-  // (undocumented)
-  h4: Partial<IFontVariant>;
-  // (undocumented)
-  h5: Partial<IFontVariant>;
-  // (undocumented)
-  link: Partial<IFontVariant>;
-}
-
-// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-// @internal
-interface IFontWeights {
-  // (undocumented)
-  bold: IFontWeight;
-  // (undocumented)
-  default: IFontWeight;
-  // (undocumented)
-  light: IFontWeight;
-  // (undocumented)
-  regular: IFontWeight;
-  // (undocumented)
-  semibold: IFontWeight;
 }
 
 // @public (undocumented)
@@ -429,32 +343,17 @@ interface IRawStyle extends IRawStyleBase {
 }
 
 // @public (undocumented)
-interface IRGB {
-  // (undocumented)
-  b: number;
-  // (undocumented)
-  g: number;
-  // (undocumented)
-  r: number;
-}
-
-// @public (undocumented)
-interface IScheme {
+interface IScheme extends IThemeCore {
   disableGlobalClassNames: boolean;
   // (undocumented)
   fonts: IFontStyles;
   // (undocumented)
   isInverted: boolean;
   // (undocumented)
-  palette: IPalette;
-  // (undocumented)
   semanticColors: ISemanticColors;
   // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
   // @internal
   spacing: ISpacing;
-  // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
-  // @internal
-  typography: ITypography;
 }
 
 // @public
@@ -617,6 +516,9 @@ export function registerOnThemeChangeCallback(callback: (theme: ITheme) => void)
 
 // @public
 export function removeOnThemeChangeCallback(callback: (theme: ITheme) => void): void;
+
+// @public
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle;
 
 // @public
 export function setIconOptions(options: Partial<IIconOptions>): void;

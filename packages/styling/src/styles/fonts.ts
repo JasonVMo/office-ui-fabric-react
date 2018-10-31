@@ -188,9 +188,9 @@ function _sanitizeObject(src: object): object {
  * values for things that are set in the fontChoice.  This is designed to produce the minimum set
  * of properties to apply on top of a base definition.
  *
- * @param font specified font settings, variant, family, etc
- * @param typography current typography settings for the current theme/scheme
- * @param onlySpecified if specified and true, this will not assume a baseline font variant and will
+ * @param font - specified font settings, variant, family, etc
+ * @param typography - current typography settings for the current theme/scheme
+ * @param onlySpecified - if specified and true, this will not assume a baseline font variant and will
  * only return values for things specified in the font choice.  If font is empty, it will return an
  * empty IRawStyle
  */
