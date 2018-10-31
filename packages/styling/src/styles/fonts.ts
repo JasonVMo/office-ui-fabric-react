@@ -1,7 +1,6 @@
 import { IRawStyle, IFontWeight } from '@uifabric/merge-styles';
-import { ITypography, IFontFamilies } from '@uifabric/foundation';
+import { ITypography, IFontFamilies, IFontChoice } from '@uifabric/theming-core';
 import { DefaultFontVariants } from './DefaultTypography';
-import { IFontChoice } from '@uifabric/foundation';
 import { IFontStyles } from '../index';
 
 // Fallback fonts, if specified system or web fonts are unavailable.

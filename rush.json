@@ -6,7 +6,9 @@
     "url": "https://github.com/OfficeDev/office-ui-fabric-react.git"
   },
   "eventHooks": {
-    "postRushInstall": ["node scripts/install-husky.js"]
+    "postRushInstall": [
+      "node scripts/install-husky.js"
+    ]
   },
   "nodeSupportedVersionRange": ">=6.9.0 <10.0.0",
   "projects": [
@@ -166,7 +168,7 @@
       "packageName": "@uifabric/theming-core",
       "projectFolder": "packages/theming-core",
       "versionPolicyName": "lockedMajor",
-      "shouldPublish": false
+      "shouldPublish": true
     }
   ]
 }

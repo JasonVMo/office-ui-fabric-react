@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, VerticalStack } from '@uifabric/experiments';
-import { IFontVariants, IFontSizes, IFontWeights, IFontFamilies } from '@uifabric/foundation';
+import { IFontVariants, IFontSizes, IFontWeights, IFontFamilies } from '@uifabric/theming-core';
 import { IStyle } from '@uifabric/merge-styles';
 import { ISemanticTextColors, IPalette } from '@uifabric/experiments/lib/Styling';
 import { createStatelessComponent, IStyleableComponentProps, IStatelessComponent } from '@uifabric/experiments/lib/Foundation';

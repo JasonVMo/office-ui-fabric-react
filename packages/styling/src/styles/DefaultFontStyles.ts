@@ -3,7 +3,7 @@ import { IFontStyles } from '../interfaces/index';
 import { createFontStyles, FontWeights, LocalizedFontFamilies, LocalizedFontNames, createTypography } from './fonts';
 import { getLanguage } from '@uifabric/utilities';
 import { IFabricConfig } from '../interfaces/IFabricConfig';
-import { ITypography } from '@uifabric/foundation';
+import { ITypography } from '@uifabric/theming-core';
 
 // Default urls.
 const DefaultBaseUrl = 'https://static2.sharepointonline.com/files/fabric/assets';

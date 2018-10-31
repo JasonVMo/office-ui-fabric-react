@@ -1,5 +1,5 @@
 import { IRawStyle } from '@uifabric/merge-styles';
-import { IPalette } from '@uifabric/foundation';
+import { IPalette } from '@uifabric/theming-core';
 import { ITheme, ISemanticColors } from '../interfaces/index';
 
 interface IRGB {

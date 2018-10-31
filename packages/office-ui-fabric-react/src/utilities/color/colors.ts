@@ -1,5 +1,5 @@
 import { assign } from '@uifabric/utilities';
-import { hsv2rgb, rgb2hex, IColor, hsv2hex, MAX_COLOR_SATURATION, MAX_COLOR_VALUE } from '@uifabric/foundation';
+import { hsv2rgb, rgb2hex, IColor, hsv2hex, MAX_COLOR_SATURATION, MAX_COLOR_VALUE } from '@uifabric/theming-core';
 
 export {
   MAX_COLOR_SATURATION,
@@ -20,7 +20,7 @@ export {
   hsv2rgb,
   getColorFromString,
   getColorFromRGBA
-} from '@uifabric/foundation';
+} from '@uifabric/theming-core';
 
 export function updateSV(color: IColor, s: number, v: number): IColor {
   const { r, g, b } = hsv2rgb(color.h, s, v);

@@ -1,5 +1,5 @@
 import { createFontStyles, createTypography, resolveFontChoice } from './fonts';
-import { IFontChoice } from '@uifabric/foundation';
+import { IFontChoice } from '@uifabric/theming-core';
 
 describe('fonts tests', () => {
   it('creates the correct font styles for en', () => {

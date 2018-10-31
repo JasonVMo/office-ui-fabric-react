@@ -1,7 +1,7 @@
 import { IFontStyles } from './IFontStyles';
 import { ISemanticColors } from './ISemanticColors';
 import { ISpacing } from './ISpacing';
-import { IThemeCore, IPartialThemeCore } from '@uifabric/foundation';
+import { IThemeCore, IPartialThemeCore } from '@uifabric/theming-core';
 
 /**
  * @internal

@@ -1,4 +1,4 @@
-import { IFontVariants } from '@uifabric/foundation';
+import { IFontVariants } from '@uifabric/theming-core';
 
 export const DefaultFontVariants: IFontVariants = {
   // size based variants

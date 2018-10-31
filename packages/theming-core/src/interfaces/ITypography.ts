@@ -1,4 +1,5 @@
-export type IFontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold';
+import { IFontWeight } from '@uifabric/merge-styles';
+export { IFontWeight } from '@uifabric/merge-styles';
 
 /**
  * @internal This is an experimental interface and will be changed post design review.

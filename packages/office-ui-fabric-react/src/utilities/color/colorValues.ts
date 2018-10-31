@@ -1,1 +1,1 @@
-export { COLOR_VALUES } from '@uifabric/foundation';
+export { COLOR_VALUES } from '@uifabric/theming-core';
