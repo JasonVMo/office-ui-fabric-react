@@ -1,4 +1,4 @@
-import { IThemeLayers } from '../interfaces/index';
+import { IThemeLayersBase } from '../interfaces/index';
 import { getLayer, mergeLayers } from './layers';
 
 const baseKey = 'base';
@@ -12,7 +12,7 @@ interface IContent {
   };
 }
 
-const BaseLayers: IThemeLayers<IContent> = {
+const BaseLayers: IThemeLayersBase<IContent> = {
   base: { n: 1, o: { n1: 1 } },
   L1a: { n: 2 },
   L1b: { s: 'foo' },
@@ -22,7 +22,7 @@ const BaseLayers: IThemeLayers<IContent> = {
   L2b: { parent: ['L1a', 'L1b', 'L1c', 'L1d'], s: 'bar' }
 };
 
-const ExpectedBase: IThemeLayers<IContent> = {
+const ExpectedBase: IThemeLayersBase<IContent> = {
   base: { n: 1, o: { n1: 1 } },
   L1a: { n: 2, o: { n1: 1 } },
   L1b: { n: 1, s: 'foo', o: { n1: 1 } },
@@ -32,7 +32,7 @@ const ExpectedBase: IThemeLayers<IContent> = {
   L2b: { parent: ['L1a', 'L1b', 'L1c', 'L1d'], n: 2, s: 'bar', o: { n2: 3 } }
 };
 
-const LayerSet2: IThemeLayers<IContent> = {
+const LayerSet2: IThemeLayersBase<IContent> = {
   base: {
     state: {
       hovered: { s: 'hover' },
@@ -68,7 +68,7 @@ const LayerSet2: IThemeLayers<IContent> = {
   }
 };
 
-const ExpectedLayer2Merge: IThemeLayers<IContent> = {
+const ExpectedLayer2Merge: IThemeLayersBase<IContent> = {
   base: {
     n: 1,
     o: { n1: 1 },

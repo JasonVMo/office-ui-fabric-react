@@ -1,4 +1,4 @@
-import { IThemeLayer, IThemeLayerBase, IThemeLayers } from '../interfaces/IThemeLayer';
+import { IThemeLayerBase, IThemeLayerBaseStates, IThemeLayersBase } from '../interfaces/IThemeLayer';
 
 function _mergeCollection<IContent>(c1: object, c2: object): object {
   // start with an assign which will generate a superset
@@ -12,13 +12,13 @@ function _mergeCollection<IContent>(c1: object, c2: object): object {
   return result;
 }
 
-function _mergeLayer<IContent>(l1: IThemeLayer<IContent>, l2: IThemeLayer<IContent>): IThemeLayer<IContent> {
+function _mergeLayer<IContent>(l1: IThemeLayerBase<IContent>, l2: IThemeLayerBase<IContent>): IThemeLayerBase<IContent> {
   const result = Object.assign({}, l1, l2);
   if (l1.state && l2.state) {
     result.state = _mergeCollection<IContent>(l1.state, l2.state);
   }
   if (l1.part && l2.part) {
-    result.part = _mergeCollection<IContent>(l1.part, l2.part) as { [key: string]: IThemeLayerBase<IContent> };
+    result.part = _mergeCollection<IContent>(l1.part, l2.part) as { [key: string]: IThemeLayerBaseStates<IContent> };
   }
   return result;
 }
@@ -30,23 +30,23 @@ function _mergeLayer<IContent>(l1: IThemeLayer<IContent>, l2: IThemeLayer<IConte
  * @param l2 - next layer collection to be merged, this is applied on top of l1
  */
 export function mergeLayers<IContent>(
-  l1: IThemeLayers<IContent> | undefined,
-  l2: IThemeLayers<IContent> | undefined
-): IThemeLayers<IContent> {
+  l1: IThemeLayersBase<IContent> | undefined,
+  l2: IThemeLayersBase<IContent> | undefined
+): IThemeLayersBase<IContent> {
   if (l1 && l2) {
-    return _mergeCollection<IContent>(l1, l2) as IThemeLayers<IContent>;
+    return _mergeCollection<IContent>(l1, l2) as IThemeLayersBase<IContent>;
   }
   return Object.assign({}, l1, l2);
 }
 
 function _getNonBaseLayer<IContent>(
-  layers: IThemeLayers<IContent>,
+  layers: IThemeLayersBase<IContent>,
   baseName: string,
   name: string
-): IThemeLayer<IContent> {
+): IThemeLayerBase<IContent> {
   const layer = layers[name];
   if (!layer) {
-    return {} as IThemeLayer<IContent>;
+    return {} as IThemeLayerBase<IContent>;
   }
   if (!layer.parent) {
     return layer;
@@ -56,11 +56,11 @@ function _getNonBaseLayer<IContent>(
   for (const parent of parents) {
     if (parent !== baseName) {
       const parentLayer = _getNonBaseLayer(layers, baseName, parent);
-      result = _mergeLayer<IContent>(result as IThemeLayer<IContent>, parentLayer);
+      result = _mergeLayer<IContent>(result as IThemeLayerBase<IContent>, parentLayer);
     }
   }
-  result = _mergeLayer<IContent>(result as IThemeLayer<IContent>, layer);
-  return result as IThemeLayer<IContent>;
+  result = _mergeLayer<IContent>(result as IThemeLayerBase<IContent>, layer);
+  return result as IThemeLayerBase<IContent>;
 }
 
 /**
@@ -71,12 +71,12 @@ function _getNonBaseLayer<IContent>(
  * @param name - name of the layer to query, if undefined or not found will default to base.
  */
 export function getLayer<IContent>(
-  layers: IThemeLayers<IContent>,
+  layers: IThemeLayersBase<IContent>,
   baseName: string,
   name?: string
-): IThemeLayer<IContent> {
+): IThemeLayerBase<IContent> {
   name = name || baseName;
-  const baseLayer: IThemeLayer<IContent> = layers[baseName];
+  const baseLayer: IThemeLayerBase<IContent> = layers[baseName];
   if (name === baseName || !layers[name]) {
     return baseLayer;
   }

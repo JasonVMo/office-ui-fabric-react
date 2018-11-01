@@ -1,4 +1,4 @@
-export type IThemeLayerBase<IContents> = IContents & {
+export type IThemeLayerBaseStates<IContents> = IContents & {
   state?: {
     pressed?: IContents;
     hovered?: IContents;
@@ -6,13 +6,13 @@ export type IThemeLayerBase<IContents> = IContents & {
   };
 };
 
-export type IThemeLayer<IContents> = IThemeLayerBase<IContents> & {
+export type IThemeLayerBase<IContents> = IThemeLayerBaseStates<IContents> & {
   parent?: string | string[];
   part?: {
-    [key: string]: IThemeLayerBase<IContents>;
+    [key: string]: IThemeLayerBaseStates<IContents>;
   }
 };
 
-export interface IThemeLayers<IContents> {
-  [layer: string]: IThemeLayer<IContents>;
+export interface IThemeLayersBase<IContents> {
+  [layer: string]: IThemeLayerBase<IContents>;
 }
