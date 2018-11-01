@@ -1,4 +1,21 @@
-import { IThemeLayerBase, IThemeLayerBaseStates, IThemeLayersBase } from '../interfaces/IThemeLayer';
+export type IThemeLayerBaseStates<IContents> = IContents & {
+  state?: {
+    pressed?: IContents;
+    hovered?: IContents;
+    disabled?: IContents;
+  };
+};
+
+export type IThemeLayerBase<IContents> = IThemeLayerBaseStates<IContents> & {
+  parent?: string | string[];
+  part?: {
+    [key: string]: IThemeLayerBaseStates<IContents>;
+  }
+};
+
+export interface IThemeLayersBase<IContents> {
+  [layer: string]: IThemeLayerBase<IContents>;
+}
 
 function _mergeCollection<IContent>(c1: object, c2: object): object {
   // start with an assign which will generate a superset

@@ -1,5 +1,4 @@
-import { IThemeLayersBase } from '../interfaces/index';
-import { getLayer, mergeLayers } from './layers';
+import { getLayer, mergeLayers, IThemeLayersBase } from './themeLayers';
 
 const baseKey = 'base';
 
