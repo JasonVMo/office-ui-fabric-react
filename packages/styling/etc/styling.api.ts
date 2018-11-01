@@ -344,6 +344,8 @@ interface IRawStyle extends IRawStyleBase {
 
 // @public (undocumented)
 interface IScheme extends IThemeCore {
+  // (undocumented)
+  addDeprecatedComments: boolean;
   disableGlobalClassNames: boolean;
   // (undocumented)
   fonts: IFontStyles;

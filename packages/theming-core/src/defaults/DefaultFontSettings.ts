@@ -1,31 +1,18 @@
-import { ITypography, IFontSizes, IFontWeights, IFontVariants, IFontFamilies } from '../interfaces/index';
-
-/**
- * fonts.ts in the styling package may have a nicer approach that uses locales to pull the correct font families
- * font utilities may end up being worthwhile
- *
- * TODO: find better defaults
- */
-export const DefaultFontFamilies: IFontFamilies = {
-  standard: 'segoe ui',
-  heading: 'segoe ui',
-  semilight: 'segoe ui',
-  monospace: 'Menlo, Monaco, "Courier New", monospace'
-};
+import { IFontSizes, IFontWeights, IFontVariants } from '../interfaces/index';
 
 // Standard font sizes.
 export const DefaultFontSizes: IFontSizes = {
-  mini: '10',
-  xSmall: '11',
-  small: '12',
-  smallPlus: '13',
-  medium: '14',
-  mediumPlus: '15',
-  large: '17',
-  xLarge: '21',
-  xxLarge: '28',
-  superLarge: '42',
-  mega: '72'
+  mini: '10px',
+  xSmall: '11px',
+  small: '12px',
+  smallPlus: '13px',
+  medium: '14px',
+  mediumPlus: '15px',
+  large: '17px',
+  xLarge: '21px',
+  xxLarge: '28px',
+  superLarge: '42px',
+  mega: '72px'
 };
 
 export const DefaultFontWeights: IFontWeights = {
@@ -86,11 +73,4 @@ export const DefaultFontVariants: IFontVariants = {
     fontSize: 'xSmall'
   },
   link: {}
-};
-
-export const DefaultTypography: ITypography = {
-  families: DefaultFontFamilies,
-  sizes: DefaultFontSizes,
-  weights: DefaultFontWeights,
-  variants: DefaultFontVariants
 };

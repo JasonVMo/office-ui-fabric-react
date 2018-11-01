@@ -1,2 +1,3 @@
 export * from './DefaultColors';
-export * from './DefaultTypography';
+export * from './DefaultFontSettings';
+export * from './DefaultThemeCore';

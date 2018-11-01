@@ -1,22 +1,25 @@
 import { Customizations, merge } from '@uifabric/utilities';
 import { ISemanticColors, ITheme, IPartialTheme } from '../interfaces/index';
-import { ITypography, IPalette } from '@uifabric/theming-core';
-import { DefaultFontStyles, DefaultTypography } from './DefaultFontStyles';
+import { ITypography, IPalette, IThemeCore, DefaultThemeCore, resolveThemeCore, createThemeCore } from '@uifabric/theming-core';
+import { DefaultFontStyles } from './DefaultFontStyles';
 import { DefaultPalette } from './DefaultPalette';
 import { DefaultSpacing } from './DefaultSpacing';
 import { loadTheme as legacyLoadTheme } from '@microsoft/load-themed-styles';
+import { createThemeRegistry } from '@uifabric/foundation';
 
 // Platform default values to use as a hidden parent theme
 const platformDefaultTheme: ITheme = {
-  palette: DefaultPalette,
-  semanticColors: _makeSemanticColorsFromPalette(DefaultPalette, false, false),
+  ...createThemeCore(),
+  semanticColors: _makeSemanticColorsFromPalette(DefaultThemeCore.palette, false, false),
   fonts: DefaultFontStyles,
-  isInverted: false,
-  typography: DefaultTypography,
   spacing: DefaultSpacing,
+  isInverted: false,
+  addDeprecatedComments: false,
   disableGlobalClassNames: false
 };
-let _theme: ITheme = createTheme({});
+
+const _registry = createThemeRegistry<ITheme, IPartialTheme>(platformDefaultTheme, _resolveTheme);
+_registry.registerTheme({});
 
 let _onThemeChangeCallbacks: Array<(theme: ITheme) => void> = [];
 
@@ -27,12 +30,27 @@ if (!Customizations.getSettings([ThemeSettingName]).theme) {
 
   // tslint:disable:no-string-literal no-any
   if (win && (win as any)['FabricConfig'] && (win as any)['FabricConfig'].theme) {
-    _theme = createTheme((win as any)['FabricConfig'].theme);
+    createTheme((win as any)['FabricConfig'].theme);
   }
   // tslint:enable:no-string-literal no-any
 
   // Set the default theme.
-  Customizations.applySettings({ [ThemeSettingName]: _theme });
+  Customizations.applySettings({ [ThemeSettingName]: getTheme() });
+}
+
+/**
+ * Optionally turn on deprecated comment mode
+ *
+ * @param depComments if it is true this will switch into deprecated comment mode.  There
+ * is no going back here because the initial design of this parameter is less than ideal.
+ * Because it is defaulted to false rather than being optional there is potential for
+ * thrashing the themes.
+ */
+function _ensureDeprecatedComments(depComments: boolean): void {
+  if (depComments && !platformDefaultTheme.addDeprecatedComments) {
+    platformDefaultTheme.addDeprecatedComments = true;
+    _registry.updatePlatformDefaults(platformDefaultTheme);
+  }
 }
 
 /**
@@ -40,11 +58,8 @@ if (!Customizations.getSettings([ThemeSettingName]).theme) {
  * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function getTheme(depComments: boolean = false): ITheme {
-  if (depComments === true) {
-    // this will recreate the theme every time, also it will stomp any customizations applied above
-    _theme = createTheme({}, depComments);
-  }
-  return _theme;
+  _ensureDeprecatedComments(depComments);
+  return _registry.getTheme();
 }
 
 /**
@@ -77,57 +92,51 @@ export function removeOnThemeChangeCallback(callback: (theme: ITheme) => void): 
  * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function loadTheme(theme: IPartialTheme, depComments: boolean = false): ITheme {
-  _theme = createTheme(theme, depComments);
+  _ensureDeprecatedComments(depComments);
+  createTheme(theme, depComments);
+  const defaultTheme = getTheme();
 
   // Invoke the legacy method of theming the page as well.
-  legacyLoadTheme({ ..._theme.palette, ..._theme.semanticColors });
+  legacyLoadTheme({ ...defaultTheme.palette, ...defaultTheme.semanticColors });
 
-  Customizations.applySettings({ [ThemeSettingName]: _theme });
+  Customizations.applySettings({ [ThemeSettingName]: getTheme() });
 
   _onThemeChangeCallbacks.forEach((callback: (theme: ITheme) => void) => {
     try {
-      callback(_theme);
+      callback(getTheme());
     } catch (e) {
       // don't let a bad callback break everything else
     }
   });
 
-  return _theme;
+  return getTheme();
 }
 
-/**
- * Return a fully resolved theme given a parent theme and a partial specificaton
- * @param theme - Partial theme specification, properties in here will be applied on top of the parent
- * @param parent - Fully specified parent theme, this will be used as the baseline and will not be modified
- * @param depComments - Whether to insert comments in deprecated properties
- */
-export function createLayeredTheme(theme: IPartialTheme, parent: ITheme, depComments: boolean = false): ITheme {
-  // patch the palette and boolean flags
-  const palette: IPalette = Object.assign({}, parent.palette, theme.palette);
-  if (!theme.palette || !theme.palette.accent) {
-    palette.accent = palette.themePrimary;
+function _getResolvedBool(baseVal: boolean, optional?: boolean): boolean {
+  return (optional !== undefined) ? optional : baseVal;
+}
+
+function _resolveTheme(partial: IPartialTheme | undefined, parent: ITheme): ITheme {
+  if (!partial) { partial = {}; }
+  const resolvedBase: IThemeCore = resolveThemeCore(partial, parent);
+
+  // note given that accent is required this seems like it can be removed
+  if (!resolvedBase.palette.accent) {
+    resolvedBase.palette.accent = resolvedBase.palette.themePrimary;
   }
 
-  const isInverted: boolean = (typeof theme.isInverted !== 'undefined' && theme.isInverted) || parent.isInverted;
-  const disableGlobalClassNames: boolean =
-    (typeof theme.disableGlobalClassNames !== 'undefined' && theme.disableGlobalClassNames) || parent.disableGlobalClassNames;
+  const isInverted = _getResolvedBool(parent.isInverted, partial.isInverted);
+  const disableGlobalClassNames = _getResolvedBool(parent.disableGlobalClassNames, partial.disableGlobalClassNames);
+  const addDeprecatedComments = _getResolvedBool(parent.addDeprecatedComments, partial.addDeprecatedComments);
 
-  // semantic colors need to be updated if the palette was set or if deprecated comments are being added
-  const updateSemantic: boolean = !!theme.palette || depComments;
-  const baseSemanticColors: ISemanticColors = updateSemantic
-    ? _makeSemanticColorsFromPalette(palette, isInverted, depComments)
-    : parent.semanticColors;
-  const semanticColors: ISemanticColors = Object.assign({}, baseSemanticColors, theme.semanticColors);
-
-  // build the merged object and return it
   return {
-    palette,
-    semanticColors,
+    ...resolvedBase,
+    semanticColors: _makeSemanticColorsFromPalette(resolvedBase.palette, isInverted, addDeprecatedComments),
+    fonts: Object.assign({}, parent.fonts, partial.fonts),
+    spacing: Object.assign({}, parent.spacing, partial.spacing),
     isInverted,
     disableGlobalClassNames,
-    fonts: Object.assign({}, parent.fonts, theme.fonts),
-    typography: merge<ITypography>({}, parent.typography, theme.typography as ITypography),
-    spacing: Object.assign({}, parent.spacing, theme.spacing)
+    addDeprecatedComments
   };
 }
 
@@ -137,22 +146,8 @@ export function createLayeredTheme(theme: IPartialTheme, parent: ITheme, depComm
  * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function createTheme(theme: IPartialTheme, depComments: boolean = false): ITheme {
-  return createLayeredTheme(theme, platformDefaultTheme, depComments);
-}
-
-/**
- * Helper to pull a given property name from a given set of sources, in order, if available. Otherwise returns the property name.
- */
-function _expandFrom<TRetVal, TMapType>(propertyName: string | TRetVal | undefined, ...maps: TMapType[]): TRetVal {
-  if (propertyName) {
-    for (const map of maps) {
-      if (map[propertyName as string]) {
-        return map[propertyName as string];
-      }
-    }
-  }
-
-  return propertyName as TRetVal;
+  _registry.registerTheme(theme);
+  return _registry.getTheme();
 }
 
 // Generates all the semantic slot colors based on the Fabric palette.

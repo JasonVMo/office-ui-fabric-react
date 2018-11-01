@@ -15,6 +15,7 @@ export interface IScheme extends IThemeCore {
   fonts: IFontStyles;
   semanticColors: ISemanticColors;
   isInverted: boolean;
+  addDeprecatedComments: boolean;
 
   /**
    * This setting is for a very narrow use case and you probably don't need to worry about,
@@ -48,6 +49,6 @@ export interface ITheme extends IScheme {
 export type IPartialTheme = IPartialThemeCore & {
   [P in keyof Pick<
   ITheme,
-  'fonts' | 'semanticColors' | 'isInverted' | 'disableGlobalClassNames' | 'spacing' | 'schemes'
+  'fonts' | 'semanticColors' | 'isInverted' | 'disableGlobalClassNames' | 'addDeprecatedComments' | 'spacing' | 'schemes'
   >]?: Partial<ITheme[P]>
 };

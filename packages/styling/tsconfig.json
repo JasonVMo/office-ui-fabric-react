@@ -30,9 +30,6 @@
     }
   },
   "include": [
-    "src",
-    "../foundation/src/themeRegistry.test.ts",
-    "../foundation/src/themeRegistry.ts",
-    "../foundation/src/theming/themeRegistry.ts"
+    "src"
   ]
 }

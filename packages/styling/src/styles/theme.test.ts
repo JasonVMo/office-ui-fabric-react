@@ -1,7 +1,6 @@
 import { registerOnThemeChangeCallback, removeOnThemeChangeCallback, loadTheme, createTheme } from './theme';
 import { IPartialTheme } from '../interfaces/index';
-import { DefaultTypography } from './DefaultFontStyles';
-import { resolveFontChoice } from './fonts';
+import { resolveFontChoice, DefaultTypography } from '@uifabric/theming-core';
 
 describe('registerOnThemeChangeCallback', () => {
   let callback = jest.fn();

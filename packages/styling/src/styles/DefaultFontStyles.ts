@@ -1,15 +1,13 @@
 import { fontFace, IFontWeight } from '@uifabric/merge-styles';
 import { IFontStyles } from '../interfaces/index';
-import { createFontStyles, FontWeights, LocalizedFontFamilies, LocalizedFontNames, createTypography } from './fonts';
-import { getLanguage } from '@uifabric/utilities';
+import { createFontStyles, FontWeights } from './fonts';
 import { IFabricConfig } from '../interfaces/IFabricConfig';
-import { ITypography } from '@uifabric/theming-core';
+import { DefaultTypography, LocalizedFontFamilies, LocalizedFontNames } from '@uifabric/theming-core';
 
 // Default urls.
 const DefaultBaseUrl = 'https://static2.sharepointonline.com/files/fabric/assets';
 
 // Standard font styling, typography and older font styles objects
-export const DefaultTypography: ITypography = createTypography(getLanguage());
 export const DefaultFontStyles: IFontStyles = createFontStyles(DefaultTypography);
 
 function _registerFontFace(fontFamily: string, url: string, fontWeight?: IFontWeight, localFontName?: string): void {
