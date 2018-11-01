@@ -54,11 +54,10 @@ export const DefaultPalette: IPalette = {
   greenLight: '#bad80a'
 };
 
-// TODO: These are likely bad defaults that need to be changed
+// TODO: These are probably terrible defaults
 export const DefaultColorSlots: IColorSlots = {
-  bgColor: 'themeDarker',
-  fgColor: 'black',
-  altColor: 'themePrimary',
-  iconColor: 'themeSecondary',
-  textColor: 'themeLighter'
+  backgroundColor: 'themeDarker',
+  textColor: 'themeLighter',
+  borderColor: 'themePrimary',
+  iconColor: 'themeSecondary'
 };

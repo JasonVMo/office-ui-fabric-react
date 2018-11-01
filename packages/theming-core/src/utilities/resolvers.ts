@@ -16,6 +16,7 @@ export function resolveThemeCore(definition: IPartialThemeCore | undefined, pare
 
   return {
     palette: Object.assign({}, parent.palette, definition.palette),
-    typography: merge<ITypography>({}, parent.typography, definition.typography as ITypography)
+    typography: merge<ITypography>({}, parent.typography, definition.typography as ITypography),
+    layers: Object.assign({}, parent.layers, definition.layers) // TODO: use a proper resolver
   };
 }

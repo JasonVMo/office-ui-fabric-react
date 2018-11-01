@@ -1,17 +1,20 @@
 import { IPalette } from './IPalette';
 import { ITypography, IPartialTypography } from './ITypography';
+import { ILayers } from './ILayers';
 
 export interface IThemeCore {
   palette: IPalette;
-
-  /**
-   * @internal
-   * The typography property is still in an experimental phase. The intent is to have it
-   * eventually replace IFontStyles in a future release, but it is still undergoing review.
-   * Avoid using it until it is finalized.
-   */
   typography: ITypography;
+  layers: ILayers;
 }
 
-export type IPartialThemeCore = { [P in keyof Pick<IThemeCore, 'palette'>]?: Partial<IThemeCore[P]> } &
-  { [P in keyof Pick<IThemeCore, 'typography'>]?: IPartialTypography };
+// We can switch back to this, although with the contents of IThemeCore being so little, the new definition
+// makes it more clear what an IPartialThemeCore is allowed to be.
+// export type IPartialThemeCore = { [P in keyof Pick<IThemeCore, 'palette'>]?: Partial<IThemeCore[P]> } &
+//   { [P in keyof Pick<IThemeCore, 'typography'>]?: IPartialTypography };
+
+export type IPartialThemeCore = {
+  palette?: Partial<IPalette>;
+  typography?: IPartialTypography;
+  layers?: Partial<ILayers>;
+};

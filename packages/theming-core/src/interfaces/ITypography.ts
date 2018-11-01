@@ -45,7 +45,7 @@ export interface IFontWeights {
 export interface IFontVariant {
   fontFamily: keyof IFontFamilies | string;
   fontSize: keyof IFontSizes | number | string;
-  fontWeight: keyof IFontWeights | number;
+  fontWeight: keyof IFontWeights | IFontWeight;
 }
 
 /**
