@@ -1,6 +1,6 @@
 import { Customizations, merge } from '@uifabric/utilities';
 import { ISemanticColors, ITheme, IPartialTheme } from '../interfaces/index';
-import { ITypography, IPalette, IThemeCore, DefaultThemeCore, resolveThemeCore, createThemeCore } from '@uifabric/theming-core';
+import { ITypography, IPalette, IThemeCore, resolveThemeCore, createThemeCore } from '@uifabric/theming-core';
 import { DefaultFontStyles } from './DefaultFontStyles';
 import { DefaultPalette } from './DefaultPalette';
 import { DefaultSpacing } from './DefaultSpacing';
@@ -8,9 +8,10 @@ import { loadTheme as legacyLoadTheme } from '@microsoft/load-themed-styles';
 import { createThemeRegistry } from '@uifabric/foundation';
 
 // Platform default values to use as a hidden parent theme
+const defaultThemeCore = createThemeCore();
 const platformDefaultTheme: ITheme = {
-  ...createThemeCore(),
-  semanticColors: _makeSemanticColorsFromPalette(DefaultThemeCore.palette, false, false),
+  ...defaultThemeCore,
+  semanticColors: _makeSemanticColorsFromPalette(defaultThemeCore.palette, false, false),
   fonts: DefaultFontStyles,
   spacing: DefaultSpacing,
   isInverted: false,

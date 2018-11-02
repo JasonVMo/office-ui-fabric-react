@@ -46,7 +46,7 @@ function _mergeLayer<IContent>(l1: IThemeLayerBase<IContent>, l2: IThemeLayerBas
  * @param l1 - base layer collection to be merged, this will be applied first
  * @param l2 - next layer collection to be merged, this is applied on top of l1
  */
-export function mergeLayers<IContent>(
+export function mergeLayersBase<IContent>(
   l1: IThemeLayersBase<IContent> | undefined,
   l2: IThemeLayersBase<IContent> | undefined
 ): IThemeLayersBase<IContent> {
@@ -87,7 +87,7 @@ function _getNonBaseLayer<IContent>(
  * @param baseName - the layer at the root of the parent child chain.  Also the layer to parent layers to by default
  * @param name - name of the layer to query, if undefined or not found will default to base.
  */
-export function getLayer<IContent>(
+export function getLayerBase<IContent>(
   layers: IThemeLayersBase<IContent>,
   baseName: string,
   name?: string

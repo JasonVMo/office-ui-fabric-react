@@ -1,11 +1,13 @@
 import { IPalette } from './IPalette';
 import { ITypography, IPartialTypography } from './ITypography';
-import { ILayers } from './ILayers';
+import { ILayers, ILayerContents } from './ILayers';
+import { IThemeLayersBase } from '@uifabric/foundation';
 
 export interface IThemeCore {
   palette: IPalette;
   typography: ITypography;
   layers: ILayers;
+  cache: IThemeLayersBase<ILayerContents>;
 }
 
 // We can switch back to this, although with the contents of IThemeCore being so little, the new definition
@@ -16,5 +18,5 @@ export interface IThemeCore {
 export type IPartialThemeCore = {
   palette?: Partial<IPalette>;
   typography?: IPartialTypography;
-  layers?: Partial<ILayers>;
+  layers?: ILayers;
 };

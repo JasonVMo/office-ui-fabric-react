@@ -33,6 +33,10 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "../foundation/src/themeLayers.test.ts",
+    "../foundation/src/themeLayers.ts",
+    "../foundation/src/layers.ts",
+    "../foundation/src/layers.test.ts"
   ]
 }
