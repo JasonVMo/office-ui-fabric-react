@@ -1,5 +1,6 @@
 import { IColorSlots } from './IColorSlots';
 import { IFontChoice } from './ITypography';
+import { ISpace } from './ISpace';
 import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
 
 /**
@@ -8,7 +9,7 @@ import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
  *
  * @internal This is an experimental interface and will be changed post design review.
  */
-export type ILayerContents = IColorSlots & IFontChoice;
+export type ILayerContents = IColorSlots & IFontChoice & ISpace;
 
 /**
  * Definition for a theme layer
