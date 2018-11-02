@@ -2,10 +2,10 @@
   "changes": [
     {
       "packageName": "office-ui-fabric-react",
-      "comment": "Expose existing mergeSettings utility function.",
-      "type": "minor"
+      "comment": "Slider: fix value calculations",
+      "type": "patch"
     }
   ],
   "packageName": "office-ui-fabric-react",
-  "email": "jagore@microsoft.com"
+  "email": "naethell@microsoft.com"
 }

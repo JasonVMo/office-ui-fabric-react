@@ -1,6 +1,20 @@
 # Change Log - office-ui-fabric-react
 
-This log was last generated on Tue, 30 Oct 2018 18:45:48 GMT and should not be manually modified.
+This log was last generated on Wed, 31 Oct 2018 22:35:10 GMT and should not be manually modified.
+
+## 6.97.1
+Wed, 31 Oct 2018 22:35:10 GMT
+
+### Patches
+
+- Adding warning and updating documentation on Pivot children needing to be of type PivotItem to be rendered.
+
+## 6.97.0
+Wed, 31 Oct 2018 12:32:41 GMT
+
+### Minor changes
+
+- Expose existing mergeSettings utility function.
 
 ## 6.96.0
 Tue, 30 Oct 2018 18:45:48 GMT
