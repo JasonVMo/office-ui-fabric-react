@@ -1,15 +1,14 @@
-import { IThemeCore, ILayers } from '../interfaces/index';
+import { IThemeCore } from '../interfaces/index';
 import { createTypography } from '../utilities/index';
 import { DefaultPalette } from './DefaultColors';
 import { getLanguage } from '@uifabric/utilities';
-
-const emptyLayers: ILayers = { base: {} };
+import { DefaultLayers } from './DefaultLayers';
 
 export function createThemeCore(): IThemeCore {
   return {
     palette: DefaultPalette,
     typography: createTypography(getLanguage()),
-    layers: emptyLayers,
+    layers: DefaultLayers,
     cache: {}
   };
 }
