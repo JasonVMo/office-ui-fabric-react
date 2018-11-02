@@ -1,6 +1,12 @@
-import { getLayerBase, mergeLayersBase, IThemeLayersBase } from './themeLayers';
+import { getLayerBase, mergeLayersBase, IThemeLayersBase, IThemeLayersConfig } from './themeLayers';
 
-const baseKey = 'base';
+const config: IThemeLayersConfig = {
+  baseKey: 'base',
+  collections: {
+    state: true,
+    part: true
+  }
+};
 
 interface IContent {
   n?: number;
@@ -8,6 +14,14 @@ interface IContent {
   o?: {
     n1?: number;
     n2?: number;
+  };
+  state?: {
+    disabled?: IContent;
+    pressed?: IContent;
+    hovered?: IContent;
+  };
+  part?: {
+    [part: string]: IContent;
   };
 }
 
@@ -133,12 +147,12 @@ const ExpectedLayer2Merge: IThemeLayersBase<IContent> = {
 describe('layer functionality', () => {
 
   it('getLayer L1a', () => {
-    const layer = getLayerBase<IContent>(BaseLayers, baseKey, 'L1a');
+    const layer = getLayerBase<IContent>(BaseLayers, config, 'L1a');
     expect(layer).toMatchObject(ExpectedBase.L1a);
   });
 
   it('getLayer L2b', () => {
-    const layer = getLayerBase<IContent>(BaseLayers, baseKey, 'L2b');
+    const layer = getLayerBase<IContent>(BaseLayers, config, 'L2b');
     expect(layer).toMatchObject(ExpectedBase.L2b);
   });
 
@@ -146,18 +160,18 @@ describe('layer functionality', () => {
     for (const key in BaseLayers) {
       if (BaseLayers.hasOwnProperty(key)) {
         expect(ExpectedBase.hasOwnProperty(key)).toBeTruthy();
-        const layer = getLayerBase<IContent>(BaseLayers, baseKey, key);
+        const layer = getLayerBase<IContent>(BaseLayers, config, key);
         expect(layer).toMatchObject(ExpectedBase[key]);
       }
     }
   });
 
   it('test mergeLayers works for complex objects', () => {
-    const mergedLayers = mergeLayersBase<IContent>(BaseLayers, LayerSet2);
+    const mergedLayers = mergeLayersBase<IContent>(config.collections, BaseLayers, LayerSet2);
     for (const key in LayerSet2) {
       if (mergedLayers.hasOwnProperty(key)) {
         expect(ExpectedLayer2Merge.hasOwnProperty(key)).toBeTruthy();
-        const layer = getLayerBase<IContent>(mergedLayers, baseKey, key);
+        const layer = getLayerBase<IContent>(mergedLayers, config, key);
         expect(layer).toMatchObject(ExpectedLayer2Merge[key]);
       }
     }

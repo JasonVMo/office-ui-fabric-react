@@ -8,17 +8,24 @@ export const DefaultLayers: ILayers = {
     borderColor: 'neutralLighter',
     iconColor: 'neutralPrimary',
     state: {
-      hovered: {
-        backgroundColor: 'neutralLighter',
-        color: 'neutralDark',
-        borderColor: 'transparent',
-        iconColor: 'neutralDark'
+      interactive: {
+        transient: {
+          hovered: {
+            backgroundColor: 'neutralLighter',
+            color: 'neutralDark',
+            borderColor: 'transparent',
+            iconColor: 'neutralDark'
+          },
+          pressed: {
+            backgroundColor: 'neutralLight',
+            color: 'neutralDark',
+            borderColor: 'transparent',
+            iconColor: 'neutralDark'
+          }
+        }
       },
-      pressed: {
-        backgroundColor: 'neutralLight',
-        color: 'neutralDark',
-        borderColor: 'transparent',
-        iconColor: 'neutralDark'
+      primary: {
+        parent: 'primary'
       },
       disabled: {
         color: 'neutralTertiary'
@@ -29,11 +36,15 @@ export const DefaultLayers: ILayers = {
     backgroundColor: 'neutralLighter',
     borderColor: 'transparent',
     state: {
-      hovered: {
-        backgroundColor: 'neutralLight'
-      },
-      pressed: {
-        backgroundColor: 'neutralLight'
+      interactive: {
+        transient: {
+          hovered: {
+            backgroundColor: 'neutralLight'
+          },
+          pressed: {
+            backgroundColor: 'neutralLight'
+          }
+        }
       }
     }
   },
@@ -42,15 +53,19 @@ export const DefaultLayers: ILayers = {
     color: 'white',
     borderColor: 'transparent',
     state: {
-      hovered: {
-        backgroundColor: 'themeDarkAlt'
-      },
-      pressed: {
-        backgroundColor: 'themeDark'
-      },
-      disabled: {
-        backgroundColor: 'neutralLighter',
-        color: 'neutralQuaternary'
+      interactive: {
+        transient: {
+          hovered: {
+            backgroundColor: 'themeDarkAlt'
+          },
+          pressed: {
+            backgroundColor: 'themeDark'
+          },
+          disabled: {
+            backgroundColor: 'neutralLighter',
+            color: 'neutralQuaternary'
+          }
+        }
       }
     }
   },

@@ -12,6 +12,9 @@ export const DefaultButtonLayers: ILayers = {
     iconSize: 14,
     iconWeight: 400
   },
+  Button: {
+    parent: ['shaded', 'buttonBase']
+  },
   circularButtonBase: {
     parent: 'buttonBase',
     width: 32,
@@ -20,16 +23,7 @@ export const DefaultButtonLayers: ILayers = {
     borderRadius: '50%',
     contentPadding: ''
   },
-  Button: {
-    parent: ['shaded', 'buttonBase']
-  },
-  PrimaryButton: {
-    parent: ['primary', 'buttonBase']
-  },
   CircularButton: {
     parent: ['shaded', 'circularButtonBase']
-  },
-  PrimaryCircularButton: {
-    parent: ['primary', 'circularButtonBase']
   }
 };

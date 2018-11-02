@@ -4,15 +4,55 @@ import { ISpace, IOtherProps } from './ISpace';
 import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
 
 /**
- * Any layer within a theme is allowed to make changes to the properties within ILayerContents
- * This allows for inheritance and cascading.
+ * The flat set of properties that can be defined for a layer
+ *
+ * @internal This is experimental and will be changed post design review
+ */
+export type ILayerContentsFlatProps = IColorSlots & IFontChoice & ISpace & IOtherProps;
+
+/**
+ * The bits of a layer that include setting transient state
  *
  * @internal This is an experimental interface and will be changed post design review.
  */
-export type ILayerContents = IColorSlots & IFontChoice & ISpace & IOtherProps;
+export type ILayerContentsCore = IColorSlots & IFontChoice & ISpace & IOtherProps & {
+  transient?: {
+    hovered?: ILayerContentsFlatProps;
+    pressed?: ILayerContentsFlatProps;
+    iconHovered?: ILayerContentsFlatProps;
+    iconPressed?: ILayerContentsFlatProps;
+  };
+};
 
 /**
- * Definition for a theme layer
+ * An interface for states and parts can add parent references
+ *
+ * @internal This is an experimental interface and will be changed post design review.
+ */
+export type ILayerContentsCoreWithParent = ILayerContentsCore & {
+  parent?: string | string[] | undefined;
+};
+
+/**
+ * The layer contents used by the themeLayers code in foundation
+ *
+ * @internal This is an experimental interface and will be changed post design review.
+ */
+export type ILayerContents = ILayerContentsCore & {
+  state?: {
+    interactive?: ILayerContentsCoreWithParent;
+    primary?: ILayerContentsCoreWithParent;
+    disabled?: ILayerContentsCoreWithParent;
+    expanded?: ILayerContentsCoreWithParent;
+    selected?: ILayerContentsCoreWithParent;
+  };
+  part?: {
+    [part: string]: ILayerContentsCoreWithParent;
+  }
+};
+
+/**
+ * Definition for a theme layer.  The wrapper will add a standard parent property
  *
  * @internal This is an experimental interface and will be changed post design review.
  */

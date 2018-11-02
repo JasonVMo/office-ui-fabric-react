@@ -1,102 +1,118 @@
-export type IThemeLayerBaseStates<IContents> = IContents & {
-  state?: {
-    pressed?: IContents;
-    hovered?: IContents;
-    disabled?: IContents;
-  };
-};
+export interface ILayerContentCollections {
+  [subcollection: string]: boolean;
+}
 
-export type IThemeLayerBase<IContents> = IThemeLayerBaseStates<IContents> & {
+export interface IThemeLayersConfig {
+  baseKey: string;
+  collections: ILayerContentCollections;
+}
+
+export type IThemeLayerBase<IContents> = IContents & {
   parent?: string | string[];
-  part?: {
-    [key: string]: IThemeLayerBaseStates<IContents>;
-  }
 };
 
 export interface IThemeLayersBase<IContents> {
   [layer: string]: IThemeLayerBase<IContents>;
 }
 
-function _mergeCollection<IContent>(c1: object, c2: object): object {
+function _mergeCollection<IContent>(collections: ILayerContentCollections, c1: object, c2: object): object {
   // start with an assign which will generate a superset
   const result = Object.assign({}, c1, c2);
   // now merge results for ones where both exist in the original
   for (const key in result) {
     if (result.hasOwnProperty(key) && c1.hasOwnProperty(key) && c2.hasOwnProperty(key)) {
-      result[key] = _mergeLayer<IContent>(c1[key], c2[key]);
+      result[key] = mergeLayerBase<IContent>(collections, c1[key], c2[key]);
     }
   }
   return result;
 }
 
-function _mergeLayer<IContent>(l1: IThemeLayerBase<IContent>, l2: IThemeLayerBase<IContent>): IThemeLayerBase<IContent> {
-  const result = Object.assign({}, l1, l2);
-  if (l1.state && l2.state) {
-    result.state = _mergeCollection<IContent>(l1.state, l2.state);
+export function mergeLayerBase<IContent>(
+  collections: ILayerContentCollections,
+  l1: IThemeLayerBase<IContent>,
+  l2: IThemeLayerBase<IContent>
+): IThemeLayerBase<IContent> {
+  if (l1 && l2) {
+    const result = Object.assign({}, l1, l2);
+    for (const key in collections) {
+      if (collections[key] && l1[key] && l2[key]) {
+        result[key] = _mergeCollection<IContent>(collections, l1[key], l2[key]);
+      }
+    }
+    return result;
   }
-  if (l1.part && l2.part) {
-    result.part = _mergeCollection<IContent>(l1.part, l2.part) as { [key: string]: IThemeLayerBaseStates<IContent> };
-  }
-  return result;
+  return l1 || l2 || {} as IThemeLayerBase<IContent>;
 }
 
 /**
  * This will take two layer collections and merge them together.  It is designed to be used in theme
  * resolvers with the theme registry.
+ * @param collections - a set of keys that should be treated as subcollections in a given layer
  * @param l1 - base layer collection to be merged, this will be applied first
  * @param l2 - next layer collection to be merged, this is applied on top of l1
  */
 export function mergeLayersBase<IContent>(
+  collections: ILayerContentCollections,
   l1: IThemeLayersBase<IContent> | undefined,
   l2: IThemeLayersBase<IContent> | undefined
 ): IThemeLayersBase<IContent> {
   if (l1 && l2) {
-    return _mergeCollection<IContent>(l1, l2) as IThemeLayersBase<IContent>;
+    return _mergeCollection<IContent>(collections, l1, l2) as IThemeLayersBase<IContent>;
   }
   return Object.assign({}, l1, l2);
 }
 
+export function getMergedNonBaseLayer<IContent>(
+  layers: IThemeLayersBase<IContent>,
+  config: IThemeLayersConfig,
+  layer: IThemeLayerBase<IContent>
+): IThemeLayerBase<IContent> {
+  if (!layer.parent) {
+    return layer;
+  }
+  const { baseKey, collections } = config;
+  const parents: string[] = (typeof layer.parent === 'string') ? [layer.parent] : layer.parent;
+  let result = {};
+  for (const parent of parents) {
+    if (parent !== baseKey) {
+      const parentLayer = _getNonBaseLayer(layers, config, parent);
+      result = mergeLayerBase<IContent>(collections, result as IThemeLayerBase<IContent>, parentLayer);
+    }
+  }
+  result = mergeLayerBase<IContent>(collections, result as IThemeLayerBase<IContent>, layer);
+  return result as IThemeLayerBase<IContent>;
+}
+
 function _getNonBaseLayer<IContent>(
   layers: IThemeLayersBase<IContent>,
-  baseName: string,
+  config: IThemeLayersConfig,
   name: string
 ): IThemeLayerBase<IContent> {
   const layer = layers[name];
   if (!layer) {
     return {} as IThemeLayerBase<IContent>;
   }
-  if (!layer.parent) {
-    return layer;
-  }
-  const parents: string[] = (typeof layer.parent === 'string') ? [layer.parent] : layer.parent;
-  let result = {};
-  for (const parent of parents) {
-    if (parent !== baseName) {
-      const parentLayer = _getNonBaseLayer(layers, baseName, parent);
-      result = _mergeLayer<IContent>(result as IThemeLayerBase<IContent>, parentLayer);
-    }
-  }
-  result = _mergeLayer<IContent>(result as IThemeLayerBase<IContent>, layer);
-  return result as IThemeLayerBase<IContent>;
+  return getMergedNonBaseLayer<IContent>(layers, config, layer);
 }
 
 /**
- *
  * @param layers - the set of theme layer definitions, will not be modified
- * @param cache - a cache of layers with parent values already applied.  May be modified by this routine
- * @param baseName - the layer at the root of the parent child chain.  Also the layer to parent layers to by default
+ * @param config - configuration object denoting structure of the layers
  * @param name - name of the layer to query, if undefined or not found will default to base.
  */
 export function getLayerBase<IContent>(
   layers: IThemeLayersBase<IContent>,
-  baseName: string,
-  name?: string
+  config: IThemeLayersConfig,
+  name?: string,
+  skipBase?: boolean
 ): IThemeLayerBase<IContent> {
-  name = name || baseName;
-  const baseLayer: IThemeLayerBase<IContent> = layers[baseName];
-  if (name === baseName || !layers[name]) {
+  const { baseKey, collections } = config;
+  name = name || baseKey;
+  const baseLayer: IThemeLayerBase<IContent> = layers[baseKey];
+  if (name === baseKey || !layers[name]) {
     return baseLayer;
   }
-  const layer = _getNonBaseLayer(layers, baseName, name);
-  return _mergeLayer<IContent>(baseLayer, layer);
+
+  const layer = _getNonBaseLayer(layers, config, name);
+  return skipBase ? layer : mergeLayerBase<IContent>(collections, baseLayer, layer);
 }
