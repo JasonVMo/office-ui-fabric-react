@@ -1,6 +1,7 @@
-import { IPartialThemeCore, IThemeCore, ITypography } from '../interfaces/index';
+import { IPartialThemeCore, IThemeCore, ITypography, ILayer, IColorSlots, IPalette } from '../interfaces/index';
 import { merge } from '@uifabric/utilities';
-import { mergeLayers } from './layers';
+import { mergeLayers, stripNonStyleProps } from './layers';
+import { resolveFontChoice } from './typography';
 
 /**
  * @internal
@@ -21,4 +22,40 @@ export function resolveThemeCore(definition: IPartialThemeCore | undefined, pare
     layers: mergeLayers(definition.layers, parent.layers),
     cache: {}
   };
+}
+
+const bogusValue = 'black';
+const slotsToResolve: IColorSlots = {
+  backgroundColor: bogusValue,
+  color: bogusValue,
+  borderColor: bogusValue,
+  iconColor: bogusValue
+};
+
+export function resolveColors(colors: IColorSlots, palette: IPalette): object {
+  const result = {};
+  for (const key in slotsToResolve) {
+    if (colors[key]) {
+      const val = palette[colors[key]];
+      if (val) {
+        result[key] = val;
+      }
+    }
+  }
+  return result;
+}
+
+function _resolvePropsAtLayer(theme: IThemeCore, layer: ILayer, backgroundColor?: string): object {
+  const result = Object.assign({},
+    layer,
+    resolveFontChoice(layer, theme.typography),
+    resolveColors(layer, theme.palette)
+  );
+  stripNonStyleProps(result);
+  backgroundColor = result.backgroundColor;
+  return result;
+}
+
+export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer): object {
+  return _resolvePropsAtLayer(theme, layer);
 }
