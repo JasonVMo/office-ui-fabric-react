@@ -2,6 +2,7 @@ import { IPartialThemeCore, IThemeCore, ITypography, ILayer, IColorSlots, IPalet
 import { merge } from '@uifabric/utilities';
 import { mergeLayers, stripNonStyleProps } from './layers';
 import { resolveFontChoice } from './typography';
+import { IRawStyle } from '@uifabric/merge-styles';
 
 /**
  * @internal
@@ -45,17 +46,41 @@ export function resolveColors(colors: IColorSlots, palette: IPalette): object {
   return result;
 }
 
-function _resolvePropsAtLayer(theme: IThemeCore, layer: ILayer, backgroundColor?: string): object {
-  const result = Object.assign({},
+const transientToSelector: { [key: string]: string } = {
+  hovered: ':hover',
+  pressed: ':hover:active'
+};
+
+function _resolveSelectors(theme: IThemeCore, layer: ILayer, style: IRawStyle): { [key: string]: IRawStyle } {
+  const bgColorBase = style.backgroundColor;
+  const transient = layer.transient;
+  const result: { [key: string]: IRawStyle } = {};
+  if (transient) {
+    for (const key in transient) {
+      if (transient.hasOwnProperty(key) && transientToSelector.hasOwnProperty(key)) {
+        const selectorKey = transientToSelector[key];
+        const existingSelector = (style.selectors && style.selectors[selectorKey] as IRawStyle) || {} as IRawStyle;
+        const backgroundColor = (existingSelector && existingSelector.backgroundColor) || bgColorBase;
+        result[selectorKey] = resolveLayerToStyle(theme, layer, { backgroundColor });
+      }
+    }
+  }
+  return result;
+}
+
+function _resolvePropsAtLayer(theme: IThemeCore, layer: ILayer, style?: IRawStyle): IRawStyle {
+  const result: IRawStyle = Object.assign({},
     layer,
     resolveFontChoice(layer, theme.typography),
     resolveColors(layer, theme.palette)
   );
+  if (layer.transient) {
+    result.selectors = _resolveSelectors(theme, layer, style || result);
+  }
   stripNonStyleProps(result);
-  backgroundColor = result.backgroundColor;
   return result;
 }
 
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer): object {
-  return _resolvePropsAtLayer(theme, layer);
+export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: IRawStyle): IRawStyle {
+  return _resolvePropsAtLayer(theme, layer, style);
 }

@@ -1,6 +1,7 @@
 import { IComponent, IStyleableComponentProps } from '../../Foundation';
 import { IStyle } from '../../Styling';
-import { IIconProps, IContextualMenuProps, IFontWeight } from 'office-ui-fabric-react';
+import { IIconProps, IContextualMenuProps } from 'office-ui-fabric-react';
+import { IFontChoice } from '@uifabric/theming-core';
 
 export type IButtonComponent = IComponent<IButtonProps, IButtonViewProps, IButtonStyles>;
 
@@ -31,33 +32,14 @@ export interface IButtonProps extends IStyleableComponentProps<IButtonProps, IBu
   styleVariables?: IButtonStyleVariables;
 }
 
-export interface IButtonStyleVariablesTypes {
-  backgroundColor?: string;
-  backgroundColorHovered?: string;
-  backgroundColorPressed?: string;
-  color?: string;
-  colorHovered?: string;
-  colorPressed?: string;
-  borderColor?: string;
-  borderColorHovered?: string;
-  borderColorPressed?: string;
-  iconColor?: string;
-  iconColorHovered?: string;
-  iconColorPressed?: string;
-  borderRadius?: number | string;
-  borderWidth?: number | string;
-  contentPadding?: number | string;
-  textFamily?: string;
-  textSize?: number | string;
-  textWeight?: IFontWeight;
+export type IButtonStyleVariablesTypes = IFontChoice & {
   width?: number | string;
   height?: number | string;
   iconSize?: number | string;
-  iconWeight?: number;
   lineHeight?: number | string;
   minWidth?: number | string;
   minHeight?: number | string;
-}
+};
 
 export type IButtonStyleVariables = { [PVariant in IButtonVariants]?: { [PState in IButtonStates]?: IButtonStyleVariablesTypes } };
 

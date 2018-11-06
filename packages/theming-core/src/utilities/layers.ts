@@ -69,7 +69,7 @@ function _promoteStates(theme: IThemeCore, layer: ILayer, states: string[]): ILa
   return newLayer;
 }
 
-export function resolveLayersToStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
+function _prepareLayersForResolution(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): ILayer {
   // compress the incoming layers
   let layer = mergeLayerStack(...layers);
 
@@ -78,6 +78,39 @@ export function resolveLayersToStyle(theme: IThemeCore, states: string[] | undef
     layer = _promoteStates(theme, layer, states);
   }
 
+  return layer;
+}
+
+export function resolveLayersToStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
+  // compress the incoming layers
+  const layer = _prepareLayersForResolution(theme, states, ...layers);
+
   // now do the flattening
   return resolveLayerToStyle(theme, layer);
+}
+
+export function resolveLayersToComponentStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
+  const layer = _prepareLayersForResolution(theme, states, ...layers);
+  const result = {
+    root: resolveLayerToStyle(theme, layer)
+  };
+  if (layer.part) {
+    const parts = layer.part;
+    for (const part in parts) {
+      if (parts[part]) {
+        result[part] = resolveLayerToStyle(theme, parts[part]);
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ *
+ * @param theme - current active theme
+ * @param style - style properties computed so far, likely from a memoized function call
+ * @param props - override props passed in
+ */
+export function resolvePropsToStyle(theme: IThemeCore, style: object, props: ILayer): object {
+  return resolveLayerToStyle(theme, props, style);
 }
