@@ -1,5 +1,4 @@
-import { IFontFamilies } from '@uifabric/theming-core';
-import { ITypography, IFontChoice } from '../interfaces/ITypography';
+import { ITypography, IFontChoice, IFontFamilies } from '../interfaces/ITypography';
 import { DefaultFontSizes, DefaultFontWeights, DefaultFontVariants } from '../defaults/index';
 import { getLanguage } from '@uifabric/utilities';
 import { IRawStyle } from '@uifabric/merge-styles';

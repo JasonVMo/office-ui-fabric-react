@@ -1,5 +1,5 @@
 import './version';
-export * from './interfaces/';
-export * from './colors/';
-export * from './utilities/';
-export * from './defaults/';
+export * from './interfaces/index';
+export * from './colors/index';
+export * from './utilities/index';
+export * from './defaults/index';

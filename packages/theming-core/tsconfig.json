@@ -22,21 +22,9 @@
     "types": [
       "jest",
       "webpack-env"
-    ],
-    "paths": {
-      "@uifabric/theming-core/lib/*": [
-        "./src/*"
-      ],
-      "@uifabric/theming-core": [
-        "./src"
-      ]
-    }
+    ]
   },
   "include": [
-    "src",
-    "../foundation/src/themeLayers.test.ts",
-    "../foundation/src/themeLayers.ts",
-    "../foundation/src/layers.ts",
-    "../foundation/src/layers.test.ts"
+    "src"
   ]
 }
