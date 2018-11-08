@@ -77,6 +77,39 @@ export function rgb2hsv(r: number, g: number, b: number): IHSV {
   return { h, s, v };
 }
 
+export function rgb2hsl(rgb: IRGB): IHSL {
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+
+  // Calculate hue
+  let h: number = 0;
+  if (delta === 0) {
+    h = 0;
+  } else if (r === max) {
+    h = ((g - b) / delta) % 6;
+  } else if (g === max) {
+    h = (b - r) / delta + 2;
+  } else if (b === max) {
+    h = (r - g) / delta + 4;
+  }
+  h *= 60;
+
+  // Calculate lightness
+  const l: number = (max + min) / 2;
+
+  // Calculate saturation
+  let s: number = 0;
+  if (delta !== 0) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+  }
+
+  return { h: h, s: s, l: l };
+}
+
 export function hsl2hsv(h: number, s: number, l: number): IHSV {
   s *= (l < 50 ? l : 100 - l) / 100;
 
@@ -100,10 +133,52 @@ export function hsv2hsl(h: number, s: number, v: number): { h: number; s: number
   return { h: h, s: sl * 100, l: l * 100 };
 }
 
-export function hsl2rgb(h: number, s: number, l: number): IRGB {
-  const hsv = hsl2hsv(h, s, l);
+/**
+ * Given an IHSl will generate an IColor with filled in r g and b
+ *
+ * @param hsl an IHSL
+ */
+export function hsl2rgb(hsl: IHSL): IRGB {
+  const c: number = (1 - Math.abs(2 * hsl.l - 1)) * hsl.s;
+  const x: number = c * (1 - Math.abs(((hsl.h / 60) % 2) - 1));
+  const m: number = hsl.l - c / 2;
 
-  return hsv2rgb(hsv.h, hsv.s, hsv.v);
+  let r1,
+    g1,
+    b1: number = 0;
+
+  // different values of h
+  if (hsl.h < 60) {
+    r1 = c;
+    g1 = x;
+    b1 = 0;
+  } else if (hsl.h < 120) {
+    r1 = x;
+    g1 = c;
+    b1 = 0;
+  } else if (hsl.h < 180) {
+    r1 = 0;
+    g1 = c;
+    b1 = x;
+  } else if (hsl.h < 240) {
+    r1 = 0;
+    g1 = x;
+    b1 = c;
+  } else if (hsl.h < 300) {
+    r1 = x;
+    g1 = 0;
+    b1 = c;
+  } else {
+    r1 = c;
+    g1 = 0;
+    b1 = x;
+  }
+
+  return {
+    r: 255 * (r1 + m),
+    g: 255 * (g1 + m),
+    b: 255 * (b1 + m)
+  };
 }
 
 export function hsv2rgb(h: number, s: number, v: number): IRGB {
@@ -272,7 +347,7 @@ function _hsl(str: string): IRGB | undefined {
     const s = parseInt(parts[1], 10);
     const l = parseInt(parts[2], 10);
 
-    const rgba = hsl2rgb(h, s, l);
+    const rgba = hsl2rgb({ h: h, s: s, l: l });
     rgba.a = 100;
 
     return rgba;
@@ -288,7 +363,7 @@ function _hsla(str: string): IRGB | undefined {
     const s = parseInt(parts[1], 10);
     const l = parseInt(parts[2], 10);
     const a = parseInt(parts[3], 10) * 100;
-    const rgba = hsl2rgb(h, s, l);
+    const rgba = hsl2rgb({ h: h, s: s, l: l });
 
     rgba.a = a;
 
