@@ -8,6 +8,13 @@ const config: IThemeLayersConfig = {
   }
 };
 
+const configNoBase: IThemeLayersConfig = {
+  collections: {
+    state: true,
+    part: true
+  }
+};
+
 interface IContent {
   n?: number;
   s?: string;
@@ -42,6 +49,16 @@ const ExpectedBase: IThemeLayersBase<IContent> = {
   L1c: { n: 1, o: { n1: 4 } },
   L1d: { n: 1, o: { n2: 3 } },
   L2a: { parent: 'L1b', n: 3, s: 'foo', o: { n1: 1 } },
+  L2b: { parent: ['L1a', 'L1b', 'L1c', 'L1d'], n: 2, s: 'bar', o: { n2: 3 } }
+};
+
+const ExpectedNoBaseLayer: IThemeLayersBase<IContent> = {
+  base: { n: 1, o: { n1: 1 } },
+  L1a: { n: 2 },
+  L1b: { s: 'foo' },
+  L1c: { o: { n1: 4 } },
+  L1d: { o: { n2: 3 } },
+  L2a: { parent: 'L1b', n: 3, s: 'foo' },
   L2b: { parent: ['L1a', 'L1b', 'L1c', 'L1d'], n: 2, s: 'bar', o: { n2: 3 } }
 };
 
@@ -162,6 +179,16 @@ describe('layer functionality', () => {
         expect(ExpectedBase.hasOwnProperty(key)).toBeTruthy();
         const layer = getLayerBase<IContent>(BaseLayers, config, key);
         expect(layer).toMatchObject(ExpectedBase[key]);
+      }
+    }
+  });
+
+  it('getLayer logic with no base layer', () => {
+    for (const key in BaseLayers) {
+      if (BaseLayers.hasOwnProperty(key)) {
+        expect(ExpectedNoBaseLayer.hasOwnProperty(key)).toBeTruthy();
+        const layer = getLayerBase<IContent>(BaseLayers, configNoBase, key);
+        expect(layer).toMatchObject(ExpectedNoBaseLayer[key]);
       }
     }
   });

@@ -45,46 +45,12 @@ export function resolveColors(colors: IColorSlots, palette: IPalette): object {
   return result;
 }
 
-const transientToSelector: { [key: string]: string } = {
-  hovered: ':hover',
-  pressed: ':hover:active'
-};
-
-interface IObjectWithStyleProps {
-  backgroundColor?: string;
-  selectors?: { [key: string]: IObjectWithStyleProps };
-}
-
-function _resolveSelectors(theme: IThemeCore, layer: ILayer, style: IObjectWithStyleProps): { [key: string]: object } {
-  const bgColorBase = style.backgroundColor;
-  const transient = layer.transient;
-  const result: { [key: string]: object } = {};
-  if (transient) {
-    for (const key in transient) {
-      if (transient.hasOwnProperty(key) && transientToSelector.hasOwnProperty(key)) {
-        const selectorKey = transientToSelector[key];
-        const existingSelector = (style.selectors && style.selectors[selectorKey]) || {};
-        const backgroundColor = (existingSelector && existingSelector.backgroundColor) || bgColorBase;
-        result[selectorKey] = resolveLayerToStyle(theme, layer, { backgroundColor });
-      }
-    }
-  }
-  return result;
-}
-
-function _resolvePropsAtLayer(theme: IThemeCore, layer: ILayer, style?: object): object {
+export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: object): object {
   const result = Object.assign({},
     layer,
     resolveFontChoice(layer, theme.typography),
     resolveColors(layer, theme.palette)
   );
-  if (layer.transient) {
-    result.selectors = _resolveSelectors(theme, layer, style || result);
-  }
   stripNonStyleProps(result);
   return result;
-}
-
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: object): object {
-  return _resolvePropsAtLayer(theme, layer, style);
 }

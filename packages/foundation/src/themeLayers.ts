@@ -3,7 +3,7 @@ export interface ILayerContentCollections {
 }
 
 export interface IThemeLayersConfig {
-  baseKey: string;
+  baseKey?: string;
   collections: ILayerContentCollections;
 }
 
@@ -96,23 +96,25 @@ function _getNonBaseLayer<IContent>(
 }
 
 /**
+ * Get a layer, including resolving the chain of dependencies for that layer
+ *
  * @param layers - the set of theme layer definitions, will not be modified
  * @param config - configuration object denoting structure of the layers
- * @param name - name of the layer to query, if undefined or not found will default to base.
+ * @param name - name of the layer to query
+ * @param skipBase - if there is a base layer this allows it to be skipped, otherwise ignored
  */
 export function getLayerBase<IContent>(
   layers: IThemeLayersBase<IContent>,
   config: IThemeLayersConfig,
-  name?: string,
+  name: string,
   skipBase?: boolean
-): IThemeLayerBase<IContent> {
-  const { baseKey, collections } = config;
-  name = name || baseKey;
-  const baseLayer: IThemeLayerBase<IContent> = layers[baseKey];
-  if (name === baseKey || !layers[name]) {
-    return baseLayer;
+): IThemeLayerBase<IContent> | undefined {
+  if (layers[name]) {
+    const layer = _getNonBaseLayer(layers, config, name);
+    if (config.baseKey && !skipBase) {
+      const baseLayer = layers[config.baseKey];
+      return mergeLayerBase<IContent>(config.collections, baseLayer, layer);
+    }
+    return layer;
   }
-
-  const layer = _getNonBaseLayer(layers, config, name);
-  return skipBase ? layer : mergeLayerBase<IContent>(collections, baseLayer, layer);
 }

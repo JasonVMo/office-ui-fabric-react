@@ -10,6 +10,7 @@ export interface ISpace {
  * until it can be appropriately organized)
  */
 export interface IOtherProps {
+  className?: string;
   iconWeight?: number;
   borderRadius?: number | string;
   borderWidth?: number | string;
@@ -20,4 +21,14 @@ export interface IOtherProps {
   lineHeight?: number | string;
   minWidth?: number | string;
   minHeight?: number | string;
+  display?: string;
+  justifyContent?: string;
+  boxSizing?: string;
+  borderStyle?: string;
+  userSelect?: string;
+  textDecoration?: string;
+  textAlign?: string;
+  verticalAlign?: string;
+  overflow?: string;
+  fill?: string;
 }

@@ -3,9 +3,8 @@ import { getLayerBase, mergeLayersBase, mergeLayerBase, IThemeLayersConfig, getM
 import { resolveLayerToStyle } from './resolvers';
 
 const layerConfig: IThemeLayersConfig = {
-  baseKey: 'base',
   collections: {
-    transient: true,
+    selectors: true,
     state: true,
     part: true
   }
@@ -24,13 +23,14 @@ export function stripNonStyleProps(target: object): void {
   }
 }
 
-export function getLayer(theme: IThemeCore, name?: string): ILayer {
-  name = name || layerConfig.baseKey;
+export function getLayer(theme: IThemeCore, name: string): ILayer | undefined {
   if (theme.cache[name]) {
     return theme.cache[name];
   }
   const layer = getLayerBase<ILayer>(theme.layers, layerConfig, name);
-  theme.cache[name] = layer;
+  if (layer) {
+    theme.cache[name] = layer;
+  }
   return layer;
 }
 
@@ -69,28 +69,29 @@ function _promoteStates(theme: IThemeCore, layer: ILayer, states: string[]): ILa
   return newLayer;
 }
 
-function _prepareLayersForResolution(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): ILayer {
-  // compress the incoming layers
+/**
+ * This will merge layers together, then promote states to produce a single resolved layer that can be
+ * used by a component.  Note that the result of this should be cached.
+ *
+ * @param theme - current theme, used to look up parent layers
+ * @param states - an optional string containing space delimited states to be applied, in order
+ * @param layers - one or more layers to merge together as part of the process
+ */
+export function getFinalizedLayer(theme: IThemeCore, states: string | undefined, ...layers: ILayer[]): ILayer {
   let layer = mergeLayerStack(...layers);
-
-  // promote any states specified
   if (states) {
-    layer = _promoteStates(theme, layer, states);
+    const stateArray = states.split(' ');
+    layer = _promoteStates(theme, layer, stateArray);
   }
-
   return layer;
 }
 
-export function resolveLayersToStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
-  // compress the incoming layers
-  const layer = _prepareLayersForResolution(theme, states, ...layers);
-
-  // now do the flattening
-  return resolveLayerToStyle(theme, layer);
-}
-
-export function resolveLayersToComponentStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
-  const layer = _prepareLayersForResolution(theme, states, ...layers);
+/**
+ * This will take a layer, which optionally may have parts, and return a set of styles grouped in parts
+ * @param theme - current theme, used to resolve values in the layer
+ * @param layer - finalized layer, should have all parent resolution and state promotion already done
+ */
+export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer): object {
   const result = {
     root: resolveLayerToStyle(theme, layer)
   };
@@ -103,14 +104,4 @@ export function resolveLayersToComponentStyle(theme: IThemeCore, states: string[
     }
   }
   return result;
-}
-
-/**
- *
- * @param theme - current active theme
- * @param style - style properties computed so far, likely from a memoized function call
- * @param props - override props passed in
- */
-export function resolvePropsToStyle(theme: IThemeCore, style: object, props: ILayer): object {
-  return resolveLayerToStyle(theme, props, style);
 }

@@ -6,45 +6,35 @@ export const DefaultLayers: ILayers = {
     backgroundColor: 'white',
     color: 'neutralPrimary',
     borderColor: 'neutralLighter',
-    iconColor: 'neutralPrimary',
+    selectors: {
+      ':hover': {
+        backgroundColor: 'neutralLighter',
+        color: 'neutralDark',
+        borderColor: 'transparent',
+      },
+      ':hover:active': {
+        backgroundColor: 'neutralLight',
+        color: 'neutralDark',
+        borderColor: 'transparent',
+      }
+    },
     state: {
-      interactive: {
-        transient: {
-          hovered: {
-            backgroundColor: 'neutralLighter',
-            color: 'neutralDark',
-            borderColor: 'transparent',
-            iconColor: 'neutralDark'
-          },
-          pressed: {
-            backgroundColor: 'neutralLight',
-            color: 'neutralDark',
-            borderColor: 'transparent',
-            iconColor: 'neutralDark'
-          }
-        }
-      },
-      primary: {
-        parent: 'primary'
-      },
       disabled: {
         color: 'neutralTertiary'
       }
-    }
+    },
   },
   shaded: {
     backgroundColor: 'neutralLighter',
+    color: 'neutralPrimary',
     borderColor: 'transparent',
+    selectors: {
+      ':hover': { backgroundColor: 'neutralLight' },
+      ':hover:active': { backgroundColor: 'neutralLight' }
+    },
     state: {
-      interactive: {
-        transient: {
-          hovered: {
-            backgroundColor: 'neutralLight'
-          },
-          pressed: {
-            backgroundColor: 'neutralLight'
-          }
-        }
+      disabled: {
+        color: 'neutralTertiary'
       }
     }
   },
@@ -52,21 +42,24 @@ export const DefaultLayers: ILayers = {
     backgroundColor: 'themePrimary',
     color: 'white',
     borderColor: 'transparent',
+    selectors: {
+      ':hover': { backgroundColor: 'themeDarkAlt' },
+      ':hover:active': { backgroundColor: 'themeDark' }
+    },
     state: {
-      interactive: {
-        transient: {
-          hovered: {
-            backgroundColor: 'themeDarkAlt'
-          },
-          pressed: {
-            backgroundColor: 'themeDark'
-          },
-          disabled: {
-            backgroundColor: 'neutralLighter',
-            color: 'neutralQuaternary'
-          }
-        }
+      disabled: {
+        backgroundColor: 'neutralLighter',
+        color: 'neutralQuaternary'
       }
+    }
+  },
+  iconBase: {
+    color: 'neutralPrimary',
+    fill: 'neutralPrimary',
+    fontWeight: 400,
+    selectors: {
+      ':hover': { color: 'neutralDark' },
+      ':hover:active': { color: 'neutralDark' }
     }
   },
   ...DefaultButtonLayers

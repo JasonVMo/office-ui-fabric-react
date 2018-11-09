@@ -12,6 +12,6 @@ export interface IColorSlots {
   backgroundColor?: keyof IPalette | string;
   textColor?: keyof IPalette | string;
   borderColor?: keyof IPalette | string;
-  iconColor?: keyof IPalette; // TODO: Should this exist here
+  iconColor?: keyof IPalette | string; // TODO: Should this exist here
   color?: keyof IPalette | string; // This is effectively resolved text color
 }

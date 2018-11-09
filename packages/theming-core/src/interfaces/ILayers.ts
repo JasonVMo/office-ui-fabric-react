@@ -4,6 +4,22 @@ import { ISpace, IOtherProps } from './ISpace';
 import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
 
 /**
+ * Things to do tonight
+ *  layers have mixins or overrides for states
+ *    apply base state/style (if existing) then apply overrides on top
+ *  do them in order
+ *
+ *  make an icon base class which overrides styles for various look and feel states
+ *
+ *  parts are done separately one by one
+ *    states/mixins get applied to parts as well
+ *    selectors support class injection when being built
+ *
+ * clean up actual interfaces in the button
+ * try to make it run
+ */
+
+/**
  * The flat set of properties that can be defined for a layer
  *
  * @internal This is experimental and will be changed post design review
@@ -11,44 +27,21 @@ import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
 export type ILayerContentsFlatProps = IColorSlots & IFontChoice & ISpace & IOtherProps;
 
 /**
- * The bits of a layer that include setting transient state
- *
- * @internal This is an experimental interface and will be changed post design review.
- */
-export type ILayerContentsCore = IColorSlots & IFontChoice & ISpace & IOtherProps & {
-  transient?: {
-    hovered?: ILayerContentsFlatProps;
-    pressed?: ILayerContentsFlatProps;
-    iconHovered?: ILayerContentsFlatProps;
-    iconPressed?: ILayerContentsFlatProps;
-  };
-};
-
-/**
- * An interface for states and parts can add parent references
- *
- * @internal This is an experimental interface and will be changed post design review.
- */
-export type ILayerContentsCoreWithParent = ILayerContentsCore & {
-  parent?: string | string[] | undefined;
-};
-
-/**
  * The layer contents used by the themeLayers code in foundation
  *
  * @internal This is an experimental interface and will be changed post design review.
  */
-export type ILayerContents = ILayerContentsCore & {
+export type ILayerContents = ILayerContentsFlatProps & {
+  selectors?: {
+    ':hover'?: ILayerContentsFlatProps;
+    ':hover:active'?: ILayerContentsFlatProps;
+  }
   state?: {
-    interactive?: ILayerContentsCoreWithParent;
-    primary?: ILayerContentsCoreWithParent;
-    disabled?: ILayerContentsCoreWithParent;
-    expanded?: ILayerContentsCoreWithParent;
-    selected?: ILayerContentsCoreWithParent;
+    [state: string]: ILayer;
   };
   part?: {
-    [part: string]: ILayerContentsCoreWithParent;
-  }
+    [part: string]: ILayer;
+  };
 };
 
 /**
