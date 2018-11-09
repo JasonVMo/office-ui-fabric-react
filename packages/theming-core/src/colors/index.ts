@@ -1,3 +1,3 @@
 export * from './colors';
 export * from './colorValues';
-export * from './relativeLuminance';
+export * from './contrast';
