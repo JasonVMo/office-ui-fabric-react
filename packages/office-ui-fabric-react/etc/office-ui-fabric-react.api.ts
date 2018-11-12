@@ -1027,10 +1027,12 @@ enum DirectionalHint {
 export function disableBodyScroll(): void;
 
 // @public (undocumented)
-class DocumentCard extends BaseComponent<IDocumentCardProps, any> {
+class DocumentCard extends BaseComponent<IDocumentCardProps, any>, implements IDocumentCard {
   constructor(props: IDocumentCardProps);
   // (undocumented)
   static defaultProps: IDocumentCardProps;
+  // (undocumented)
+  focus(): void;
   // (undocumented)
   render(): JSX.Element;
 }
@@ -1649,8 +1651,8 @@ enum HoverCardType {
 // @public (undocumented)
 export function hsl2hsv(h: number, s: number, l: number): IHSV;
 
-// @public (undocumented)
-export function hsl2rgb(h: number, s: number, l: number): IRGB;
+// @public
+export function hsl2rgb(hsl: IHSL): IRGB;
 
 // @public (undocumented)
 export function hsv2hex(h: number, s: number, v: number): string;
@@ -2536,6 +2538,7 @@ interface IChoiceGroup {
 
 // @public (undocumented)
 interface IChoiceGroupOption extends React.HTMLAttributes<HTMLElement | HTMLInputElement> {
+  ariaLabel?: string;
   checked?: boolean;
   disabled?: boolean;
   iconProps?: IIconProps;
@@ -2662,7 +2665,7 @@ interface ICoachmark {
 }
 
 // @public (undocumented)
-interface ICoachmarkProps extends React.Props<Coachmark> {
+interface ICoachmarkProps extends React.ClassAttributes<Coachmark> {
   ariaAlertText?: string;
   ariaDescribedBy?: string;
   ariaDescribedByText?: string;
@@ -6219,7 +6222,7 @@ interface IContextualMenuRenderItem {
 }
 
 // @public
-interface IContextualMenuSection extends React.Props<any> {
+interface IContextualMenuSection extends React.ClassAttributes<any> {
   bottomDivider?: boolean;
   items: IContextualMenuItem[];
   title?: string;
@@ -6269,6 +6272,7 @@ interface IContextualMenuStyles {
 // @public (undocumented)
 interface IContextualMenuSubComponentStyles {
   callout: IStyleFunctionOrObject<ICalloutContentStyleProps, any>;
+  menuItem: IStyleFunctionOrObject<IContextualMenuItemStyleProps, any>;
 }
 
 // @public (undocumented)
@@ -6444,7 +6448,7 @@ interface IDetailsGroupRenderProps extends IGroupRenderProps {
 
 // WARNING: The type "DetailsHeaderBase" needs to be exported by the package (e.g. added to index.ts)
 // @public (undocumented)
-interface IDetailsHeaderBaseProps extends React.Props<DetailsHeaderBase>, IDetailsItemProps {
+interface IDetailsHeaderBaseProps extends React.ClassAttributes<DetailsHeaderBase>, IDetailsItemProps {
   ariaLabel?: string;
   ariaLabelForSelectAllCheckbox?: string;
   ariaLabelForSelectionColumn?: string;
@@ -6901,6 +6905,7 @@ interface IDividerAsProps extends IIconProps {
 
 // @public (undocumented)
 interface IDocumentCard {
+  focus: () => void;
 }
 
 // @public (undocumented)
@@ -7216,6 +7221,7 @@ interface IFacepilePersona extends React.ButtonHTMLAttributes<HTMLButtonElement 
   imageInitials?: string;
   imageUrl?: string;
   initialsColor?: PersonaInitialsColor;
+  keytipProps?: IKeytipProps;
   onClick?: (ev?: React.MouseEvent<HTMLElement>, persona?: IFacepilePersona) => void;
   onMouseMove?: (ev?: React.MouseEvent<HTMLElement>, persona?: IFacepilePersona) => void;
   onMouseOut?: (ev?: React.MouseEvent<HTMLElement>, persona?: IFacepilePersona) => void;
@@ -8159,8 +8165,10 @@ interface IModalProps extends React.Props<ModalBase>, IWithResponsiveModeState, 
   isBlocking?: boolean;
   isDarkOverlay?: boolean;
   isOpen?: boolean;
+  layerProps?: ILayerProps;
   onDismiss?: (ev?: React.MouseEvent<HTMLButtonElement>) => any;
   onDismissed?: () => any;
+  // @deprecated
   onLayerDidMount?: () => void;
   scrollableContentClassName?: string;
   styles?: IStyleFunctionOrObject<IModalStyleProps, IModalStyles>;
@@ -8233,6 +8241,7 @@ interface INavProps {
   groups: INavLinkGroup[] | null;
   initialSelectedKey?: string;
   isOnTop?: boolean;
+  linkAs?: IComponentAs<IButtonProps>;
   onLinkClick?: (ev?: React.MouseEvent<HTMLElement>, item?: INavLink) => void;
   onLinkExpandClick?: (ev?: React.MouseEvent<HTMLElement>, item?: INavLink) => void;
   onRenderGroupHeader?: IRenderFunction<INavLinkGroup>;

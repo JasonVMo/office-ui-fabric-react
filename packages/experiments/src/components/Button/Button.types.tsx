@@ -1,19 +1,22 @@
 import { IComponent, IStyleableComponentProps } from '../../Foundation';
 import { IStyle } from '../../Styling';
-import { IIconProps, IContextualMenuProps } from 'office-ui-fabric-react';
 import { IFontChoice } from '@uifabric/theming-core';
+import { IIconProps, IContextualMenuProps, IFontWeight, IRefObject } from '@uifabric/office-ui-fabric-react';
 
 export type IButtonComponent = IComponent<IButtonProps, IButtonViewProps, IButtonStyles>;
 
-// States should only be javascript evluated states. (Not css states.)
+// States should only be javascript evaluated states. (Not css states.)
 export type IButtonStates = 'baseState' | 'enabled' | 'disabled' | 'expanded';
 
 export type IButtonVariants = 'baseVariant' | 'primary' | 'circular';
 
 export type IButtonSlots = 'root' | 'stack' | 'text' | 'icon' | 'menuIcon';
 
+export interface IButton {}
+
 export interface IButtonProps extends IStyleableComponentProps<IButtonProps, IButtonStyles> {
   as?: keyof JSX.IntrinsicElements;
+  componentRef?: IRefObject<IButton>;
   className?: string;
   href?: string;
   text?: string;
