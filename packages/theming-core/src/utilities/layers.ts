@@ -7,7 +7,8 @@ const layerConfig: IThemeLayersConfig = {
     selectors: true,
     state: true,
     part: true
-  }
+  },
+  overrides: 'state'
 };
 
 const nonStyleProps = {

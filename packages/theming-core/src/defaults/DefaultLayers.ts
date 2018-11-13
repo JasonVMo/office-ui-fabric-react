@@ -10,19 +10,19 @@ export const DefaultLayers: ILayers = {
       ':hover': {
         backgroundColor: 'neutralLighter',
         color: 'neutralDark',
-        borderColor: 'transparent',
+        borderColor: 'transparent'
       },
       ':hover:active': {
         backgroundColor: 'neutralLight',
         color: 'neutralDark',
-        borderColor: 'transparent',
+        borderColor: 'transparent'
       }
     },
     state: {
       disabled: {
         color: 'neutralTertiary'
       }
-    },
+    }
   },
   shaded: {
     backgroundColor: 'neutralLighter',

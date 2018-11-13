@@ -22,6 +22,7 @@ const constButtonStyles: ILayer = {
   lineHeight: '1',
   part: {
     icon: {
+      parent: 'iconBase',
       display: 'flex'
     },
     stack: {
