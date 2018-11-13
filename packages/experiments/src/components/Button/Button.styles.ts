@@ -1,39 +1,11 @@
 import { IButtonComponent, IButtonStyles, IButtonStyleVariablesTypes, IButtonStates } from './Button.types';
 import { getFocusStyle, getGlobalClassNames, concatStyleSets } from '../../Styling';
 import { memoizeFunction, merge } from '../../Utilities';
-import {
-  resolveLayersToComponentStyle,
-  getLayer,
-  ILayer,
-  IThemeCore,
-  IStateMask,
-  getStatesForLayer
-} from '@uifabric/theming-core';
+import { getComponentStyles, ILayer, IThemeCore, getStatesForLayer } from '@uifabric/theming-core';
 
 const GlobalClassNames = {
   icon: 'ms-Icon'
 };
-
-interface IButtonBooleanProps extends IStateMask {
-  circular?: boolean;
-}
-
-interface IComponentOptions {
-  layerName: string;
-  states: string[] | undefined;
-}
-
-function _getComponentOptions(boolProps: IButtonBooleanProps): IComponentOptions {
-  return {
-    layerName: boolProps.circular ? 'CircularButton' : 'Button',
-    states: getStatesForLayer(boolProps)
-  };
-}
-
-const getBaseStyles = memoizeFunction((theme: IThemeCore, states: string[] | undefined, layerName: string, constLayer: ILayer): object => {
-  const layerFromTheme = getLayer(theme, layerName);
-  return resolveLayersToComponentStyle(theme, states, constLayer, layerFromTheme);
-});
 
 const constButtonStyles: ILayer = {
   padding: 0,
@@ -49,7 +21,7 @@ const constButtonStyles: ILayer = {
   lineHeight: '1',
   part: {
     icon: {
-      display: 'flex',
+      display: 'flex'
     },
     stack: {
       height: '100%',
@@ -59,17 +31,29 @@ const constButtonStyles: ILayer = {
       overflow: 'visible'
     }
   }
-}
+};
+
+const getBaseStyles = memoizeFunction(
+  (theme: IThemeCore, states: string | undefined, layerName: string, disabled: boolean, iconClass: string): object => {
+    return getComponentStyles(theme, {
+      layerName,
+      constLayer: constButtonStyles,
+      states,
+      partStates: states,
+      disabled,
+      selectors: true,
+      partClasses: {
+        icon: iconClass
+      }
+    });
+  }
+);
 
 export const getOriginalButtonStyles: IButtonComponent['styles'] = props => {
   const { theme, disabled, expanded, className, circular, primary, styleVariables } = props;
   const { semanticColors } = theme;
 
-  const globalClassNames = getGlobalClassNames(
-    GlobalClassNames,
-    theme,
-    true
-  );
+  const globalClassNames = getGlobalClassNames(GlobalClassNames, theme, true);
 
   const buttonVariables = _processVariables(
     {
@@ -289,52 +273,25 @@ function _processVariables<T>(partialVariables: T, customVariables?: T): IProces
 }
 
 export const getButtonStylesNew: IButtonComponent['styles'] = props => {
-  const { theme, disabled, expanded, className, circular, primary } = props;
+  const { theme, className, circular, disabled } = props;
 
-  const boolProps: IButtonBooleanProps = { interactive: true, disabled, expanded, circular, primary };
-  const { layerName, states } = _getComponentOptions(boolProps);
-
+  const layerName = circular ? 'CircularButton' : 'Button';
+  const states = getStatesForLayer(props);
   const globalClassNames = getGlobalClassNames(GlobalClassNames, theme, true);
 
-  // resolverLayersToComponentStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object {
-
-  const baseStyle = getBaseStyles(theme, states, layerName, constButtonStyles);
-
-  /*
-    Things to capture
-      width: state.width,
-      height: state.height,
-      minWidth: state.minWidth,
-      minHeight: state.minHeight,
-      selectors: {
-        [`:hover .${globalClassNames.icon}`]: {
-          color: state.iconColorHovered
-        },
-        [`:hover:active .${globalClassNames.icon}`]: {
-          color: state.iconColorPressed
-        }
-      }
-      icon: [
-      {
-        fontSize: state.iconSize,
-        color: state.iconColor,
-        fill: state.iconColor,
-        // tslint:disable-next-line:no-any
-        fontWeight: state.iconWeight as any
-      },
-      globalClassNames.icon
-    ],
-    stack: {
-      padding: state.contentPadding,
-      height: '100%'
-    }
-  */
+  // now get the memoized styles
+  const baseStyle = getBaseStyles(theme, states, layerName, !!disabled, globalClassNames.icon || '');
 
   // Styles!
   return concatStyleSets(
-    { root: getFocusStyle(theme) },
+    {
+      root: getFocusStyle(theme)
+    },
     baseStyle,
-    { root: className }
+    {
+      root: className,
+      icon: globalClassNames.icon
+    }
   );
 };
 
@@ -342,7 +299,7 @@ export const getButtonStyles: IButtonComponent['styles'] = props => {
   const newStyles = getButtonStylesNew(props);
   const origStyles = getOriginalButtonStyles(props);
   if (newStyles) {
-    return origStyles;
+    return newStyles;
   }
   return origStyles;
 };

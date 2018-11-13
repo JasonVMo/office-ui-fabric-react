@@ -1649,8 +1649,8 @@ enum HoverCardType {
 // @public (undocumented)
 export function hsl2hsv(h: number, s: number, l: number): IHSV;
 
-// @public (undocumented)
-export function hsl2rgb(h: number, s: number, l: number): IRGB;
+// @public
+export function hsl2rgb(hsl: IHSL): IRGB;
 
 // @public (undocumented)
 export function hsv2hex(h: number, s: number, v: number): string;

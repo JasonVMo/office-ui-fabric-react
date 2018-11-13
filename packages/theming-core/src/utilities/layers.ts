@@ -1,5 +1,5 @@
 import { IThemeCore, ILayer, ILayers } from '../interfaces/index';
-import { getLayerBase, mergeLayersBase, mergeLayerBase, IThemeLayersConfig, getMergedNonBaseLayer } from '@uifabric/foundation';
+import { getLayerBase, mergeLayerCollectionBase, mergeLayerBase, IThemeLayersConfig, addMixinToLayerBase } from '@uifabric/foundation';
 import { resolveLayerToStyle } from './resolvers';
 
 const layerConfig: IThemeLayersConfig = {
@@ -35,7 +35,7 @@ export function getLayer(theme: IThemeCore, name: string): ILayer | undefined {
 }
 
 export function mergeLayers(partial: ILayers | undefined, parent: ILayers): ILayers {
-  return mergeLayersBase<ILayer>(layerConfig.collections, parent, partial);
+  return mergeLayerCollectionBase<ILayer>(layerConfig.collections, parent, partial);
 }
 
 export function mergeLayerStack(...layers: ILayer[]): ILayer {
@@ -53,18 +53,10 @@ export function mergeLayerStack(...layers: ILayer[]): ILayer {
   return {};
 }
 
-function _promoteStates(theme: IThemeCore, layer: ILayer, states: string[]): ILayer {
-  if (typeof states === 'string') {
-    states = [states];
-  }
+function _mixinStates(theme: IThemeCore, layer: ILayer, states: string[]): ILayer {
   let newLayer = layer;
-  if (layer.state) {
-    for (const state of states) {
-      if (layer.state[state]) {
-        const stateLayer = getMergedNonBaseLayer<ILayer>(theme.layers, layerConfig, layer.state[state]);
-        newLayer = mergeLayerBase<ILayer>(layerConfig.collections, newLayer, stateLayer);
-      }
-    }
+  for (const state of states) {
+    newLayer = addMixinToLayerBase<ILayer>(theme.layers, layerConfig, newLayer, state);
   }
   return newLayer;
 }
@@ -77,11 +69,25 @@ function _promoteStates(theme: IThemeCore, layer: ILayer, states: string[]): ILa
  * @param states - an optional string containing space delimited states to be applied, in order
  * @param layers - one or more layers to merge together as part of the process
  */
-export function getFinalizedLayer(theme: IThemeCore, states: string | undefined, ...layers: ILayer[]): ILayer {
+export function getFinalizedLayer(
+  theme: IThemeCore,
+  states: string | undefined,
+  childStates: string | undefined,
+  ...layers: ILayer[]
+): ILayer {
   let layer = mergeLayerStack(...layers);
   if (states) {
     const stateArray = states.split(' ');
-    layer = _promoteStates(theme, layer, stateArray);
+    layer = _mixinStates(theme, layer, stateArray);
+  }
+  if (layer.part && childStates) {
+    const stateArray = childStates.split(' ');
+    const parts = layer.part;
+    for (const key in parts) {
+      if (parts[key]) {
+        parts[key] = _mixinStates(theme, parts[key], stateArray);
+      }
+    }
   }
   return layer;
 }

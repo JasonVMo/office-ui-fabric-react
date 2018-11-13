@@ -1,15 +1,9 @@
 import { IThemeCore, ILayer } from '../interfaces/index';
 import { resolveLayerToStyle } from './resolvers';
-import { resolveLayersToComponentStyle, getFinalizedLayer, resolveLayerToComponentStyle } from './layers';
+import { getFinalizedLayer, resolveLayerToComponentStyle } from './layers';
 import { getLayer } from './layers';
 
-const stateOrder: string[] = [
-  'expanded',
-  'selected',
-  'shaded',
-  'primary',
-  'disabled'
-];
+const stateOrder: string[] = ['expanded', 'selected', 'shaded', 'primary', 'disabled'];
 
 /**
  * Take an object, likely with some boolean flags for states to enable, and turn it into a state
@@ -99,13 +93,18 @@ export interface IGetComponentStyleProps {
   selectors?: boolean;
   partClasses?: {
     [partName: string]: string;
-  }
+  };
 }
 
 export function getComponentStyles(theme: IThemeCore, props: IGetComponentStyleProps): object {
   const { layerName, constLayer, states, partStates, disabled, selectors, partClasses } = props;
   const themeLayer = getLayer(theme, layerName);
-  const layer = getFinalizedLayer(theme, states, constLayer || {}, themeLayer || {});
+  const layer = getFinalizedLayer(theme, states, partStates, constLayer || {}, themeLayer || {});
   const style = resolveLayerToComponentStyle(theme, layer);
-
+  const rootStyleKey = 'root';
+  const rootStyle = style[rootStyleKey];
+  if (selectors && !disabled) {
+    rootStyle.selectors = resolveSelectorsForLayer(theme, layer, { style: rootStyle, parts: partClasses });
+  }
+  return style;
 }

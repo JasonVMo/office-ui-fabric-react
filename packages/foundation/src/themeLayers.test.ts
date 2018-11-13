@@ -1,4 +1,4 @@
-import { getLayerBase, mergeLayersBase, IThemeLayersBase, IThemeLayersConfig } from './themeLayers';
+import { getLayerBase, mergeLayerCollectionBase, IThemeLayersBase, IThemeLayersConfig, addMixinToLayerBase } from './themeLayers';
 
 const config: IThemeLayersConfig = {
   baseKey: 'base',
@@ -162,7 +162,6 @@ const ExpectedLayer2Merge: IThemeLayersBase<IContent> = {
 };
 
 describe('layer functionality', () => {
-
   it('getLayer L1a', () => {
     const layer = getLayerBase<IContent>(BaseLayers, config, 'L1a');
     expect(layer).toMatchObject(ExpectedBase.L1a);
@@ -194,7 +193,7 @@ describe('layer functionality', () => {
   });
 
   it('test mergeLayers works for complex objects', () => {
-    const mergedLayers = mergeLayersBase<IContent>(config.collections, BaseLayers, LayerSet2);
+    const mergedLayers = mergeLayerCollectionBase<IContent>(config.collections, BaseLayers, LayerSet2);
     for (const key in LayerSet2) {
       if (mergedLayers.hasOwnProperty(key)) {
         expect(ExpectedLayer2Merge.hasOwnProperty(key)).toBeTruthy();
@@ -202,5 +201,125 @@ describe('layer functionality', () => {
         expect(layer).toMatchObject(ExpectedLayer2Merge[key]);
       }
     }
+  });
+});
+
+const configWithOverride: IThemeLayersConfig = {
+  collections: {
+    state: true,
+    part: true
+  },
+  overrides: 'state'
+};
+
+const OverrideBase: IThemeLayersBase<IContent> = {
+  default: {
+    n: 1,
+    s: 'default'
+  },
+  disabled: {
+    s: 'disabled'
+  },
+  pressed: {
+    s: 'pressed'
+  },
+  hovered: {
+    s: 'hovered'
+  },
+  buttonBase: {
+    parent: 'default',
+    state: {
+      disabled: {
+        n: 0
+      },
+      pressed: {
+        s: 'buttonPress'
+      }
+    }
+  },
+  disabledButton: {
+    parent: ['buttonBase', 'disabled']
+  },
+  normalButton: {
+    parent: 'buttonBase'
+  }
+};
+
+const ExpectedOverrideValues: IThemeLayersBase<IContent> = {
+  buttonBase: {
+    parent: 'buttonBase',
+    n: 1,
+    s: 'default',
+    state: {
+      disabled: {
+        n: 0
+      },
+      pressed: {
+        s: 'buttonPress'
+      }
+    }
+  },
+  disabledButton: {
+    parent: ['buttonBase', 'disabled'],
+    n: 0,
+    s: 'disabled',
+    state: {
+      disabled: {
+        n: 0
+      },
+      pressed: {
+        s: 'buttonPress'
+      }
+    }
+  },
+  buttonWithPressedMixin: {
+    parent: 'buttonBase',
+    n: 1,
+    s: 'buttonPress',
+    state: {
+      disabled: {
+        n: 0
+      },
+      pressed: {
+        s: 'buttonPress'
+      }
+    }
+  },
+  buttonWithHoveredMixin: {
+    parent: 'buttonBase',
+    n: 1,
+    s: 'hovered',
+    state: {
+      disabled: {
+        n: 0
+      },
+      pressed: {
+        s: 'buttonPress'
+      }
+    }
+  }
+};
+
+describe('layer overriding tests', () => {
+  it('getLayer button', () => {
+    const layer = getLayerBase<IContent>(OverrideBase, configWithOverride, 'normalButton');
+    expect(layer).toMatchObject(ExpectedOverrideValues.buttonBase);
+  });
+
+  it('getLayer L2b', () => {
+    const layer = getLayerBase<IContent>(OverrideBase, configWithOverride, 'disabledButton');
+    expect(layer).toMatchObject(ExpectedOverrideValues.disabledButton);
+  });
+
+  it('getLayer with pressed mixins', () => {
+    const layer = getLayerBase<IContent>(OverrideBase, configWithOverride, 'normalButton');
+    const adjLayer = addMixinToLayerBase(OverrideBase, configWithOverride, layer!, 'pressed');
+    expect(adjLayer).toMatchObject(ExpectedOverrideValues.buttonWithPressedMixin);
+  });
+
+  it('getLayer with hovered mixins', () => {
+    const layer = getLayerBase<IContent>(OverrideBase, configWithOverride, 'normalButton');
+    const adjLayer = addMixinToLayerBase(OverrideBase, configWithOverride, layer!, 'hovered');
+    expect(adjLayer).toMatchObject(ExpectedOverrideValues.buttonWithHoveredMixin);
   });
 });
