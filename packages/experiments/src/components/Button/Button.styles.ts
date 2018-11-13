@@ -8,6 +8,7 @@ const GlobalClassNames = {
 };
 
 const constButtonStyles: ILayer = {
+  fontVariant: 'standard',
   padding: 0,
   display: 'inline-block',
   justifyContent: 'center',

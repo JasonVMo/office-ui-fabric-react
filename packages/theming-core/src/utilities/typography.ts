@@ -141,13 +141,13 @@ function _sanitizeObject(src: object): object {
  * only return values for things specified in the font choice.  If font is empty, it will return an
  * empty IRawStyle
  */
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle {
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle {
   const input: IFontChoice = _sanitizeObject(fontChoice);
   const variants = typography.variants;
   const variant = input.fontVariant;
-  const font = Object.assign({}, (variant || !onlySpecified) && variants.standard, variant && variants[variant], input);
+  const font = Object.assign({}, variant && variants.standard, variant && variants[variant], input);
   return {
-    ...(!onlySpecified && { MozOsxFontSmoothing: 'grayscale', WebkitFontSmoothing: 'antialiased' }),
+    ...((variant || font.fontFamily) && { MozOsxFontSmoothing: 'grayscale', WebkitFontSmoothing: 'antialiased' }),
     ...(font.fontFamily && { fontFamily: typography.families[font.fontFamily] || font.fontFamily }),
     ...(font.fontSize && { fontSize: typography.sizes[font.fontSize] || font.fontSize }),
     ...(font.fontWeight && { fontWeight: typography.weights[font.fontWeight] || font.fontWeight })

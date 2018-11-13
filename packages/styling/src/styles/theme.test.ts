@@ -49,7 +49,7 @@ describe('theme.typography', () => {
 
     const newTheme = createTheme(userTheme);
 
-    const fontStyle = resolveFontChoice({}, newTheme.typography);
+    const fontStyle = resolveFontChoice({ fontVariant: 'standard' }, newTheme.typography);
     expect(fontStyle.fontSize).toEqual(DefaultTypography.sizes.small);
   });
 
@@ -64,7 +64,7 @@ describe('theme.typography', () => {
 
     const newTheme = createTheme(userTheme);
 
-    const fontStyle = resolveFontChoice({}, newTheme.typography);
+    const fontStyle = resolveFontChoice({ fontVariant: 'standard' }, newTheme.typography);
     expect(fontStyle.fontSize).toEqual('100px');
   });
 

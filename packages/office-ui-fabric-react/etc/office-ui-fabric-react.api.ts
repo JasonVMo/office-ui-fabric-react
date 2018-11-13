@@ -11333,7 +11333,7 @@ class ResizeGroupBase extends BaseComponent<IResizeGroupProps, IResizeGroupState
 }
 
 // @public
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle;
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
 
 // @public (undocumented)
 export function rgb2hex(r: number, g: number, b: number): string;

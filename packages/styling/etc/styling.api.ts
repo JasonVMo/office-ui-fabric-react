@@ -520,7 +520,7 @@ export function registerOnThemeChangeCallback(callback: (theme: ITheme) => void)
 export function removeOnThemeChangeCallback(callback: (theme: ITheme) => void): void;
 
 // @public
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle;
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
 
 // @public
 export function setIconOptions(options: Partial<IIconOptions>): void;
