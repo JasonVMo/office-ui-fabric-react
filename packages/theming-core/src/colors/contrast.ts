@@ -5,7 +5,7 @@
  * Some optimizations and approximations for color space transforms and values
  *   could be interesting to explore and use here
  */
-import { hsl2rgb, IHSL, IRGB, rgb2hsl } from './colors';
+import { hsl2rgb, IHSL, IRGB, rgb2hsl, cssColor, rgb2hex } from './colors';
 
 /**
  * An ISuggestionRange is an interface internal to the utilities in this file
@@ -181,4 +181,66 @@ export function adjustForContrast(baseline: IRGB, target: IRGB, desiredRatio: nu
   }
 
   return contrastAdjust(baseline, desiredRelLuminance);
+}
+
+/**
+ * internal interface for caching contrast adjusted values.  This has a lookup table for converting
+ * strings into rgb values and a cache for remembering previously calculated values since the
+ * actual luminance adjustment process is potentially expensive and because the calculations will
+ * always be constant for a given pair of values.
+ */
+interface IContrastCache {
+  rgbLookup: {
+    [color: string]: IRGB;
+  };
+  cache: {
+    [bgColor: string]: {
+      [fgColor: string]: string;
+    };
+  };
+}
+
+/**
+ * internal cache object
+ */
+const _contrastCache = {
+  rgbLookup: {},
+  cache: {}
+};
+
+/**
+ * Gets a (potentially cached) rgb value for a given string
+ * @param lookup - lookup table for looking up and caching name to rgb values
+ * @param color - color string to lookup in the table
+ */
+function _getRgbForColor(lookup: IContrastCache['rgbLookup'], color: string): IRGB {
+  if (!lookup[color]) {
+    const colorAsRgb = cssColor(color);
+    lookup[color] = colorAsRgb || { r: 0, b: 0, g: 0 };
+  }
+  return lookup[color];
+}
+
+/**
+ * Take two strings representing a foreground and background color and potentially return a new foreground
+ * color value which has an acceptable level of contrast with the background.  Because this can be expensive
+ * it has an internal cache.
+ * @param color - foreground color to potentially adjust for contrast
+ * @param backgroundColor - background color to that the color needs to be shown on
+ * @param desiredRatio - desired contrast ratio, defaults to 4.5
+ */
+export function getContrastingColor(color: string, backgroundColor: string, desiredRatio: number = 4.5): string {
+  const cache = _contrastCache.cache;
+  if (!cache[backgroundColor]) {
+    cache[backgroundColor] = {};
+  }
+  const bgEntry = cache[backgroundColor];
+  if (!bgEntry[color]) {
+    const rgbLookup = _contrastCache.rgbLookup;
+    const fg = _getRgbForColor(rgbLookup, color);
+    const bg = _getRgbForColor(rgbLookup, backgroundColor);
+    const newFg = adjustForContrast(fg, bg, desiredRatio);
+    bgEntry[color] = rgb2hex(newFg.r, newFg.g, newFg.b);
+  }
+  return bgEntry[color];
 }

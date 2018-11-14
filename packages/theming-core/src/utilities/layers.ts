@@ -99,14 +99,13 @@ export function getFinalizedLayer(
  * @param layer - finalized layer, should have all parent resolution and state promotion already done
  */
 export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer): object {
-  const result = {
-    root: resolveLayerToStyle(theme, layer)
-  };
+  const rootStyle = resolveLayerToStyle(theme, layer);
+  const result = { root: rootStyle };
   if (layer.part) {
     const parts = layer.part;
     for (const part in parts) {
       if (parts[part]) {
-        result[part] = resolveLayerToStyle(theme, parts[part]);
+        result[part] = resolveLayerToStyle(theme, parts[part], rootStyle);
       }
     }
   }

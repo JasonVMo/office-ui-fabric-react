@@ -28,7 +28,20 @@ export function getColorFromRGBA(rgba: {
 export function getColorFromString(inputColor: string): IColor | undefined;
 
 // @public (undocumented)
-export function getLayer(theme: IThemeCore, name?: string): ILayer;
+export function getComponentStyles(theme: IThemeCore, props: IGetComponentStyleProps): object;
+
+// @public
+export function getContrastingColor(color: string, backgroundColor: string, desiredRatio?: number): string;
+
+// @public
+export function getFinalizedLayer(theme: IThemeCore, states: string | undefined, childStates: string | undefined, ...layers: ILayer[]): ILayer;
+
+// @public (undocumented)
+export function getLayer(theme: IThemeCore, name: string): ILayer | undefined;
+
+// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
+// @internal
+export function getStatesForLayer(mask: object): string | undefined;
 
 // @public (undocumented)
 export function hsl2hsv(h: number, s: number, l: number): IHSV;
@@ -67,7 +80,7 @@ interface IColorSlots {
   // (undocumented)
   color?: keyof IPalette | string;
   // (undocumented)
-  iconColor?: keyof IPalette;
+  iconColor?: keyof IPalette | string;
   // (undocumented)
   textColor?: keyof IPalette | string;
 }
@@ -177,6 +190,26 @@ interface IFontWeights {
 }
 
 // @public (undocumented)
+interface IGetComponentStyleProps {
+  // (undocumented)
+  constLayer?: ILayer;
+  // (undocumented)
+  disabled?: boolean;
+  // (undocumented)
+  layerName: string;
+  // (undocumented)
+  partClasses?: {
+    [partName: string]: string;
+  }
+  // (undocumented)
+  partStates?: string;
+  // (undocumented)
+  selectors?: boolean;
+  // (undocumented)
+  states?: string;
+}
+
+// @public (undocumented)
 interface IHSL {
   // (undocumented)
   h: number;
@@ -197,13 +230,33 @@ interface IHSV {
 }
 
 // @public
+interface IObjectWithStyleProps {
+  // (undocumented)
+  backgroundColor?: string;
+  // (undocumented)
+  selectors?: {
+    [key: string]: IObjectWithStyleProps;
+  }
+}
+
+// @public
 interface IOtherProps {
   // (undocumented)
   borderRadius?: number | string;
   // (undocumented)
+  borderStyle?: string;
+  // (undocumented)
   borderWidth?: number | string;
   // (undocumented)
+  boxSizing?: string;
+  // (undocumented)
+  className?: string;
+  // (undocumented)
   contentPadding?: number | string;
+  // (undocumented)
+  display?: string;
+  // (undocumented)
+  fill?: string;
   // (undocumented)
   height?: number | string;
   // (undocumented)
@@ -211,11 +264,23 @@ interface IOtherProps {
   // (undocumented)
   iconWeight?: number;
   // (undocumented)
+  justifyContent?: string;
+  // (undocumented)
   lineHeight?: number | string;
   // (undocumented)
   minHeight?: number | string;
   // (undocumented)
   minWidth?: number | string;
+  // (undocumented)
+  overflow?: string;
+  // (undocumented)
+  textAlign?: string;
+  // (undocumented)
+  textDecoration?: string;
+  // (undocumented)
+  userSelect?: string;
+  // (undocumented)
+  verticalAlign?: string;
   // (undocumented)
   width?: number | string;
 }
@@ -271,6 +336,16 @@ interface IPalette {
   whiteTranslucent40: string;
   yellow: string;
   yellowLight: string;
+}
+
+// @public (undocumented)
+interface IResolveSelectorsProps {
+  // (undocumented)
+  parts?: {
+    [partName: string]: string;
+  }
+  // (undocumented)
+  style: IObjectWithStyleProps;
 }
 
 // @public (undocumented)
@@ -378,19 +453,24 @@ export function relativeLuminance(r: number, g: number, b: number): number;
 export function resolveColors(colors: IColorSlots, palette: IPalette): object;
 
 // @public
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography, onlySpecified?: boolean): IRawStyle;
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
+
+// @public
+export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer): object;
 
 // @public (undocumented)
-export function resolveLayersToComponentStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object;
+export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: {
+    backgroundColor?: string;
+}): object;
 
 // @public (undocumented)
-export function resolveLayersToStyle(theme: IThemeCore, states: string[] | undefined, ...layers: ILayer[]): object;
+export function resolveSelectorsForLayer(theme: IThemeCore, layer: ILayer, props: IResolveSelectorsProps): object;
 
-// @public (undocumented)
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: object): object;
-
-// @public (undocumented)
-export function resolvePropsToStyle(theme: IThemeCore, style: object, props: ILayer): object;
+// @public
+export function resolveTextColor(style: {
+    color?: string;
+    textColor?: string;
+}, backgroundColor: string): void;
 
 // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
 // @internal
@@ -409,8 +489,6 @@ export function rgb2hsv(r: number, g: number, b: number): IHSV;
 export function stripNonStyleProps(target: object): void;
 
 // WARNING: Unsupported export: ILayerContentsFlatProps
-// WARNING: Unsupported export: ILayerContentsCore
-// WARNING: Unsupported export: ILayerContentsCoreWithParent
 // WARNING: Unsupported export: ILayerContents
 // WARNING: Unsupported export: ILayer
 // WARNING: Unsupported export: ILayers

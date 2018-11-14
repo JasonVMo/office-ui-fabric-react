@@ -2,6 +2,7 @@ import { IPartialThemeCore, IThemeCore, ITypography, ILayer, IColorSlots, IPalet
 import { merge } from '@uifabric/utilities';
 import { mergeLayers, stripNonStyleProps } from './layers';
 import { resolveFontChoice } from './typography';
+import { getContrastingColor } from '../colors/index';
 
 /**
  * @internal
@@ -45,12 +46,23 @@ export function resolveColors(colors: IColorSlots, palette: IPalette): object {
   return result;
 }
 
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: object): object {
-  const result = Object.assign({},
-    layer,
-    resolveFontChoice(layer, theme.typography),
-    resolveColors(layer, theme.palette)
-  );
+/**
+ * Take a style object and if it has a textColor set it into color with potential color adjustments
+ * along the way
+ *
+ * @param style - style where if a textColor is set, the color should be set to either the specified
+ * color if it meets contrast requirements, or a shaded version of the color which does contrast
+ * @param backgroundColor - the background color to use for contrast adjustment purposes
+ */
+export function resolveTextColor(style: { color?: string; textColor?: string }, backgroundColor: string): void {
+  if (style.textColor) {
+    style.color = getContrastingColor(style.textColor, backgroundColor);
+  }
+}
+
+export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: { backgroundColor?: string }): object {
+  const result = Object.assign({}, layer, resolveFontChoice(layer, theme.typography), resolveColors(layer, theme.palette));
+  resolveTextColor(result, result.backgroundColor || (style && style.backgroundColor) || 'white');
   stripNonStyleProps(result);
   return result;
 }

@@ -9,7 +9,7 @@ const stateOrder: string[] = ['expanded', 'selected', 'shaded', 'primary', 'disa
  * Take an object, likely with some boolean flags for states to enable, and turn it into a state
  * string in a standard order
  *
- * @param mask some kind of object where any values with keys matching the states in ILayerStates
+ * @param mask - some kind of object where any values with keys matching the states in ILayerStates
  * where the values are truthy will cause that state to be added
  *
  * @internal This is an experimental interface and will be changed post design review.
@@ -27,7 +27,7 @@ export function getStatesForLayer(mask: object): string | undefined {
 /**
  * Used to pass additional parts to query for selectors.  If the partName is found in the layer and
  * there is a selector specified, the provided string will be used as the class name.  If the
- * value was { icon: 'ms-Icon' }, the produced selector might be ':hover .ms-Icon': { }
+ * value was \{ icon: 'ms-Icon' \}, the produced selector might be ':hover .ms-Icon': \{ \}
  */
 
 export interface IObjectWithStyleProps {

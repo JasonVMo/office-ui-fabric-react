@@ -1,6 +1,6 @@
 import { IComponent, IStyleableComponentProps } from '../../Foundation';
 import { IStyle } from '../../Styling';
-import { IIconProps, IContextualMenuProps, IFontWeight, IRefObject } from '@uifabric/office-ui-fabric-react';
+import { IIconProps, IContextualMenuProps, IFontWeight, IRefObject } from 'office-ui-fabric-react';
 
 export type IButtonComponent = IComponent<IButtonProps, IButtonViewProps, IButtonStyles>;
 
