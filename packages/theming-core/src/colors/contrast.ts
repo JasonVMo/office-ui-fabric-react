@@ -21,7 +21,7 @@ interface ISuggestionRange {
  * This is necessary for relative luminance calculations
  * Formula defined at https://en.wikipedia.org/wiki/SRGB
  *
- * @param c one of r g or b coming from sRGB
+ * @param c - one of r g or b coming from sRGB
  */
 function standardToLinear(c: number): number {
   return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
@@ -55,8 +55,8 @@ export function relativeLuminance(r: number, g: number, b: number): number {
  * Contrast ratios (text on background) are fundamental for determining the readability of text
  * Formula from https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
  *
- * @param relLumA a relative luminance value
- * @param relLumB a relative luminacne value
+ * @param relLumA - a relative luminance value
+ * @param relLumB - a relative luminacne value
  */
 export function contrastRatio(relLumA: number, relLumB: number): number {
   const lighter: number = relLumA > relLumB ? relLumA : relLumB;
@@ -67,8 +67,8 @@ export function contrastRatio(relLumA: number, relLumB: number): number {
 /**
  * A wrapper around contrast ratio calculation using the IRGB interface
  *
- * @param c1
- * @param c2
+ * @param c1 - first color
+ * @param c2 - second color
  */
 export function calcContrastRatio(c1: IRGB, c2: IRGB): number {
   const relC1: number = relativeLuminance(c1.r, c1.g, c1.b);
@@ -86,8 +86,8 @@ export function calcContrastRatio(c1: IRGB, c2: IRGB): number {
  * In these cases this function will return a [-1, -1] or [2, 2] range
  * The different ranges are used to default to white or black in the exposed adjustForContrast
  *
- * @param color the constant IColor upon which we want to contrast with
- * @param desiredRatio a contrast ratio (generally from some accesibility standard)
+ * @param color - the constant IColor upon which we want to contrast with
+ * @param desiredRatio - a contrast ratio (generally from some accesibility standard)
  */
 function getContrastingLuminanceRange(color: IRGB, desiredRatio: number): ISuggestionRange {
   const relLum: number = relativeLuminance(color.r, color.g, color.b);
@@ -121,8 +121,8 @@ function getContrastingLuminanceRange(color: IRGB, desiredRatio: number): ISugge
  * But will maintain the same tone (hue and saturation in this case)
  * It does so by transforming to an IHSL and searching across L values for a proper relative luminance
  *
- * @param color a baseline color of which the returned color will maintain its hue and saturation
- * @param suggestedRelLuminance a luminance range to use
+ * @param color - a baseline color of which the returned color will maintain its hue and saturation
+ * @param suggestedRelLuminance - a luminance range to use
  */
 function contrastAdjust(color: IRGB, suggestedRelLuminance: ISuggestionRange): IRGB {
   // it is possible that the current color meets the suggested relative luminance
@@ -164,9 +164,9 @@ function contrastAdjust(color: IRGB, suggestedRelLuminance: ISuggestionRange): I
  * If the desired ratio is unachievable white or black (dependent on target's relative luminance)
  * will be used
  *
- * @param textColor a color value serving as a baseline for the tone (hue and saturation) to maintain
- * @param backgroundColor the target to contrast against
- * @param desiredRatio a desired contrast ratio (default is WCAG 2 AA standard for normal text)
+ * @param textColor - a color value serving as a baseline for the tone (hue and saturation) to maintain
+ * @param backgroundColor - the target to contrast against
+ * @param desiredRatio - a desired contrast ratio (default is WCAG 2 AA standard for normal text)
  */
 export function adjustForContrast(baseline: IRGB, target: IRGB, desiredRatio: number = 4.5): IRGB {
   const desiredRelLuminance: ISuggestionRange = getContrastingLuminanceRange(target, desiredRatio);

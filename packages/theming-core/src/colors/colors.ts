@@ -136,7 +136,7 @@ export function hsv2hsl(h: number, s: number, v: number): { h: number; s: number
 /**
  * Given an IHSl will generate an IColor with filled in r g and b
  *
- * @param hsl - an IHSL
+ * @param hsl - hsl an IHSL
  */
 export function hsl2rgb(hsl: IHSL): IRGB {
   const c: number = (1 - Math.abs(2 * hsl.l - 1)) * hsl.s;
