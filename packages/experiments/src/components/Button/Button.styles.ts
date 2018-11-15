@@ -1,6 +1,6 @@
-import { IButtonComponent, IButtonStyles, IButtonStyleVariablesTypes, IButtonStates } from './Button.types';
+import { IButtonComponent } from './Button.types';
 import { getFocusStyle, getGlobalClassNames, concatStyleSets } from '../../Styling';
-import { memoizeFunction, merge } from '../../Utilities';
+import { memoizeFunction } from '../../Utilities';
 import { getComponentStyles, ILayer, IThemeCore, getStatesForLayer } from '@uifabric/theming-core';
 
 const GlobalClassNames = {
