@@ -363,9 +363,9 @@ interface IRGB {
 // @public (undocumented)
 interface ISpace {
   // (undocumented)
-  margin?: number;
+  margin?: number | string;
   // (undocumented)
-  padding?: number;
+  padding?: number | string;
 }
 
 // @public (undocumented)

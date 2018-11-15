@@ -29,12 +29,20 @@ export const DefaultLayers: ILayers = {
     color: 'neutralPrimary',
     borderColor: 'transparent',
     selectors: {
-      ':hover': { backgroundColor: 'neutralLight' },
-      ':hover:active': { backgroundColor: 'neutralLight' }
+      ':hover': { backgroundColor: 'neutralLight', color: 'neutralDark' },
+      ':hover:active': { backgroundColor: 'neutralLight', color: 'neutralDark' }
     },
     state: {
       disabled: {
         color: 'neutralTertiary'
+      },
+      expanded: {
+        backgroundColor: 'neutralTertiaryAlt',
+        color: 'neutralDark',
+        selectors: {
+          ':hover': { backgroundColor: 'neutralLight', color: 'black' },
+          ':hover:active': { backgroundColor: 'neutralLight', color: 'black' }
+        }
       }
     }
   },
@@ -50,6 +58,13 @@ export const DefaultLayers: ILayers = {
       disabled: {
         backgroundColor: 'neutralLighter',
         color: 'neutralQuaternary'
+      },
+      expanded: {
+        backgroundColor: 'themeDarkAlt',
+        selectors: {
+          ':hover': { backgroundColor: 'themeDark' },
+          ':hover:active': { backgroundColor: 'themePrimary' }
+        }
       }
     }
   },
@@ -60,6 +75,16 @@ export const DefaultLayers: ILayers = {
     selectors: {
       ':hover': { color: 'neutralDark' },
       ':hover:active': { color: 'neutralDark' }
+    },
+    state: {
+      primary: {
+        color: 'white',
+        fill: 'white',
+        selectors: {
+          ':hover': { color: 'white' },
+          ':hover:active': { color: 'white' }
+        }
+      }
     }
   },
   ...DefaultButtonLayers

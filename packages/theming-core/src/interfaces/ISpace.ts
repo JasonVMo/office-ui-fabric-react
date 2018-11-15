@@ -1,6 +1,6 @@
 export interface ISpace {
-  margin?: number;
-  padding?: number;
+  margin?: number | string;
+  padding?: number | string;
   // TODO: there is likely much more to be filled in
 }
 

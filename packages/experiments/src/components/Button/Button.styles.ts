@@ -27,7 +27,7 @@ const constButtonStyles: ILayer = {
     },
     stack: {
       height: '100%',
-      contentPadding: '8px 16px'
+      padding: '8px 16px'
     },
     text: {
       overflow: 'visible'
