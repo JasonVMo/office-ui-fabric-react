@@ -76,10 +76,10 @@ export function mergeLayerStack(...layers: ILayer[]): ILayer {
   return {};
 }
 
-function _mixinStates(theme: IThemeCore, layer: ILayer, states: string[]): ILayer {
+function _mixinStates(theme: IThemeCore, layer: ILayer, states: string[], excludeBase?: boolean): ILayer {
   let newLayer = layer;
   for (const state of states) {
-    newLayer = addMixinToLayerBase<ILayer>(theme.layers, layerConfig, newLayer, state);
+    newLayer = addMixinToLayerBase<ILayer>(theme.layers, layerConfig, newLayer, state, excludeBase);
   }
   return newLayer;
 }
@@ -108,7 +108,7 @@ export function getFinalizedLayer(
     const parts = { ...layer.slots };
     for (const key in parts) {
       if (parts[key]) {
-        parts[key] = _mixinStates(theme, parts[key], stateArray);
+        parts[key] = _mixinStates(theme, parts[key], stateArray, true);
       }
     }
     layer.slots = parts;

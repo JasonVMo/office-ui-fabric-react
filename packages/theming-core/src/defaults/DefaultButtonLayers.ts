@@ -6,7 +6,7 @@ export const DefaultButtonLayers: ILayers = {
     borderWidth: 0,
     minWidth: 100,
     minHeight: 32,
-    lineHeight: 1,
+    lineHeight: '1',
     contentPadding: '8px 16px',
     fontWeight: 'bold',
     iconSize: 14,
@@ -21,7 +21,11 @@ export const DefaultButtonLayers: ILayers = {
     minWidth: 0,
     height: 32,
     borderRadius: '50%',
-    contentPadding: ''
+    slots: {
+      stack: {
+        padding: ''
+      }
+    }
   },
   CircularButton: {
     parent: ['shaded', 'circularButtonBase']

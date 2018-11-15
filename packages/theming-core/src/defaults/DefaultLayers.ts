@@ -51,8 +51,8 @@ export const DefaultLayers: ILayers = {
     color: 'white',
     borderColor: 'transparent',
     selectors: {
-      ':hover': { backgroundColor: 'themeDarkAlt' },
-      ':hover:active': { backgroundColor: 'themeDark' }
+      ':hover': { backgroundColor: 'themeDarkAlt', color: 'white' },
+      ':hover:active': { backgroundColor: 'themeDark', color: 'white' }
     },
     overrides: {
       disabled: {

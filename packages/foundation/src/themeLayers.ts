@@ -95,14 +95,17 @@ export function addMixinToLayerBase<IContent>(
   layers: IThemeLayersBase<IContent>,
   config: IThemeLayersConfig,
   layer: IThemeLayerBase<IContent>,
-  mixin: string
+  mixin: string,
+  excludeBase?: boolean,
 ): IThemeLayerBase<IContent> {
   let result = layer;
 
-  // look up the mixin by name from the base layer collection
-  const mixinFromBase = getLayerBase<IContent>(layers, config, mixin);
-  if (mixinFromBase) {
-    result = mergeLayerBase<IContent>(config.collections, result, mixinFromBase);
+  if (!excludeBase) {
+    // look up the mixin by name from the base layer collection
+    const mixinFromBase = getLayerBase<IContent>(layers, config, mixin);
+    if (mixinFromBase) {
+      result = mergeLayerBase<IContent>(config.collections, result, mixinFromBase);
+    }
   }
 
   // if we are using overrides then try to look it up from the override collection as well
@@ -155,6 +158,21 @@ function _getLayerWorker<IContent>(
   if (config.overrides && result[config.overrides]) {
     for (const parent of parents) {
       result = _mixinOverride(layers, config, result as IThemeLayerBase<IContent>, parent);
+    }
+  }
+
+  // resolve child entries that have parent dependencies
+  if (collections) {
+    for (const subCollection in collections) {
+      if (collections.hasOwnProperty(subCollection) && result[subCollection]) {
+        const childLayers = { ...result[subCollection] } as IThemeLayersBase<IContent>;
+        result[subCollection] = childLayers;
+        for (const child in childLayers) {
+          if (childLayers[child] && childLayers[child].parent) {
+            childLayers[child] = _getLayerWorker(layers, config, childLayers[child]) as IThemeLayerBase<IContent>;
+          }
+        }
+      }
     }
   }
 
