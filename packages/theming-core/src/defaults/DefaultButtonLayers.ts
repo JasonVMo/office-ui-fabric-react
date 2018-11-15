@@ -1,7 +1,8 @@
 import { ILayers } from '../interfaces/index';
 
 export const DefaultButtonLayers: ILayers = {
-  buttonBase: {
+  Button: {
+    parent: 'shaded',
     borderRadius: 0,
     borderWidth: 0,
     minWidth: 100,
@@ -12,11 +13,8 @@ export const DefaultButtonLayers: ILayers = {
     iconSize: 14,
     iconWeight: 400
   },
-  Button: {
-    parent: ['shaded', 'buttonBase']
-  },
-  circularButtonBase: {
-    parent: 'buttonBase',
+  CircularButton: {
+    parent: 'Button',
     width: 32,
     minWidth: 0,
     height: 32,
@@ -26,8 +24,5 @@ export const DefaultButtonLayers: ILayers = {
         padding: ''
       }
     }
-  },
-  CircularButton: {
-    parent: ['shaded', 'circularButtonBase']
   }
 };
