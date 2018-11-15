@@ -20,7 +20,7 @@ const constButtonStyles: ILayer = {
   verticalAlign: 'baseline',
   overflow: 'hidden',
   lineHeight: '1',
-  part: {
+  slots: {
     icon: {
       parent: 'iconBase',
       display: 'flex'
@@ -41,11 +41,13 @@ const getBaseStyles = memoizeFunction(
       layerName,
       constLayer: constButtonStyles,
       states,
-      partStates: states,
+      slotStates: states,
       disabled,
       selectors: true,
-      partClasses: {
-        icon: iconClass
+      slots: {
+        icon: iconClass,
+        stack: undefined,
+        text: undefined
       }
     });
   }

@@ -36,11 +36,11 @@ export type ILayerContents = ILayerContentsFlatProps & {
     ':hover'?: ILayerContentsFlatProps;
     ':hover:active'?: ILayerContentsFlatProps;
   }
-  state?: {
-    [state: string]: ILayer;
+  overrides?: {
+    [mixin: string]: ILayer;
   };
-  part?: {
-    [part: string]: ILayer;
+  slots?: {
+    [slot: string]: ILayer;
   };
 };
 

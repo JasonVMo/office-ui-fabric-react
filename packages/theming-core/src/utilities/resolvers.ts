@@ -1,7 +1,6 @@
-import { IPartialThemeCore, IThemeCore, ITypography, ILayer, IColorSlots, IPalette } from '../interfaces/index';
+import { IPartialThemeCore, IThemeCore, ITypography, IColorSlots, IPalette } from '../interfaces/index';
 import { merge } from '@uifabric/utilities';
-import { mergeLayers, stripNonStyleProps } from './layers';
-import { resolveFontChoice } from './typography';
+import { mergeLayerCollections } from './layers';
 import { getContrastingColor } from '../colors/index';
 
 /**
@@ -20,7 +19,7 @@ export function resolveThemeCore(definition: IPartialThemeCore | undefined, pare
   return {
     palette: Object.assign({}, parent.palette, definition.palette),
     typography: merge<ITypography>({}, parent.typography, definition.typography as ITypography),
-    layers: mergeLayers(definition.layers, parent.layers),
+    layers: mergeLayerCollections(definition.layers, parent.layers),
     cache: {}
   };
 }
@@ -29,6 +28,7 @@ const bogusValue = 'black';
 const slotsToResolve: IColorSlots = {
   backgroundColor: bogusValue,
   color: bogusValue,
+  textColor: bogusValue,
   borderColor: bogusValue,
   iconColor: bogusValue
 };
@@ -58,11 +58,4 @@ export function resolveTextColor(style: { color?: string; textColor?: string }, 
   if (style.textColor) {
     style.color = getContrastingColor(style.textColor, backgroundColor);
   }
-}
-
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: { backgroundColor?: string }): object {
-  const result = Object.assign({}, layer, resolveFontChoice(layer, theme.typography), resolveColors(layer, theme.palette));
-  resolveTextColor(result, result.backgroundColor || (style && style.backgroundColor) || 'white');
-  stripNonStyleProps(result);
-  return result;
 }

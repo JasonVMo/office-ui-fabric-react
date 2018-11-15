@@ -18,7 +18,7 @@ export const DefaultLayers: ILayers = {
         borderColor: 'transparent'
       }
     },
-    state: {
+    overrides: {
       disabled: {
         color: 'neutralTertiary'
       }
@@ -32,7 +32,7 @@ export const DefaultLayers: ILayers = {
       ':hover': { backgroundColor: 'neutralLight', color: 'neutralDark' },
       ':hover:active': { backgroundColor: 'neutralLight', color: 'neutralDark' }
     },
-    state: {
+    overrides: {
       disabled: {
         color: 'neutralTertiary'
       },
@@ -54,7 +54,7 @@ export const DefaultLayers: ILayers = {
       ':hover': { backgroundColor: 'themeDarkAlt' },
       ':hover:active': { backgroundColor: 'themeDark' }
     },
-    state: {
+    overrides: {
       disabled: {
         backgroundColor: 'neutralLighter',
         color: 'neutralQuaternary'
@@ -76,7 +76,7 @@ export const DefaultLayers: ILayers = {
       ':hover': { color: 'neutralDark' },
       ':hover:active': { color: 'neutralDark' }
     },
-    state: {
+    overrides: {
       primary: {
         color: 'white',
         fill: 'white',

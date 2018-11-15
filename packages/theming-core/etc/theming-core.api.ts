@@ -36,7 +36,7 @@ export function getContrastingColor(color: string, backgroundColor: string, desi
 // @public
 export function getFinalizedLayer(theme: IThemeCore, states: string | undefined, childStates: string | undefined, ...layers: ILayer[]): ILayer;
 
-// @public (undocumented)
+// @public
 export function getLayer(theme: IThemeCore, name: string): ILayer | undefined;
 
 // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
@@ -191,21 +191,14 @@ interface IFontWeights {
 
 // @public (undocumented)
 interface IGetComponentStyleProps {
-  // (undocumented)
   constLayer?: ILayer;
-  // (undocumented)
   disabled?: boolean;
-  // (undocumented)
   layerName: string;
-  // (undocumented)
-  partClasses?: {
-    [partName: string]: string;
-  }
-  // (undocumented)
-  partStates?: string;
-  // (undocumented)
   selectors?: boolean;
-  // (undocumented)
+  slots?: {
+    [slot: string]: string | undefined;
+  }
+  slotStates?: string;
   states?: string;
 }
 
@@ -341,8 +334,8 @@ interface IPalette {
 // @public (undocumented)
 interface IResolveSelectorsProps {
   // (undocumented)
-  parts?: {
-    [partName: string]: string;
+  slots?: {
+    [slotName: string]: string | undefined;
   }
   // (undocumented)
   style: IObjectWithStyleProps;
@@ -440,10 +433,10 @@ module LocalizedFontFamilies {
 module LocalizedFontNames {
 }
 
-// @public (undocumented)
-export function mergeLayers(partial: ILayers | undefined, parent: ILayers): ILayers;
+// @public
+export function mergeLayerCollections(partial: ILayers | undefined, parent: ILayers): ILayers;
 
-// @public (undocumented)
+// @public
 export function mergeLayerStack(...layers: ILayer[]): ILayer;
 
 // @public
@@ -456,12 +449,7 @@ export function resolveColors(colors: IColorSlots, palette: IPalette): object;
 export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
 
 // @public
-export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer): object;
-
-// @public (undocumented)
-export function resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: {
-    backgroundColor?: string;
-}): object;
+export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer, slots?: IGetComponentStyleProps['slots']): object;
 
 // @public (undocumented)
 export function resolveSelectorsForLayer(theme: IThemeCore, layer: ILayer, props: IResolveSelectorsProps): object;
@@ -484,9 +472,6 @@ export function rgb2hsl(rgb: IRGB): IHSL;
 
 // @public (undocumented)
 export function rgb2hsv(r: number, g: number, b: number): IHSV;
-
-// @public (undocumented)
-export function stripNonStyleProps(target: object): void;
 
 // WARNING: Unsupported export: ILayerContentsFlatProps
 // WARNING: Unsupported export: ILayerContents
