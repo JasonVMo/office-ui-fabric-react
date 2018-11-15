@@ -83,12 +83,13 @@ export function getFinalizedLayer(
   }
   if (layer.part && childStates) {
     const stateArray = childStates.split(' ');
-    const parts = layer.part;
+    const parts = { ...layer.part };
     for (const key in parts) {
       if (parts[key]) {
         parts[key] = _mixinStates(theme, parts[key], stateArray);
       }
     }
+    layer.part = parts;
   }
   return layer;
 }
