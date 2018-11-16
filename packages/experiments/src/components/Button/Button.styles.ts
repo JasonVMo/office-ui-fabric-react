@@ -1,7 +1,7 @@
 import { IButtonComponent } from './Button.types';
 import { getFocusStyle, getGlobalClassNames, concatStyleSets } from '../../Styling';
 import { memoizeFunction } from '../../Utilities';
-import { getComponentStyles, ILayer, IThemeCore, getStatesForLayer } from '@uifabric/theming-core';
+import { getComponentStyles, ILayer, IThemeCore, getStatesForLayer, IPartialComponentStyle } from '@uifabric/theming-core';
 
 const GlobalClassNames = {
   icon: 'ms-Icon'
@@ -38,7 +38,7 @@ const constButtonStyles: ILayer = {
 const getBaseStyles = memoizeFunction(
   (theme: IThemeCore, states: string | undefined, layerName: string, disabled: boolean, iconClass: string): object => {
     return getComponentStyles(theme, {
-      layerName,
+      layer: layerName,
       constLayer: constButtonStyles,
       states,
       slotStates: states,
@@ -63,15 +63,32 @@ export const getButtonStyles: IButtonComponent['styles'] = props => {
   // now get the memoized styles
   const baseStyle = getBaseStyles(theme, states, layerName, !!disabled, globalClassNames.icon || '');
 
+  const propsLayer = props.styleVariables;
+  const propsStyle = propsLayer && getComponentStyles(theme, {
+    layer: propsLayer,
+    states,
+    slotStates: states,
+    disabled,
+    selectors: true,
+    slots: {
+      icon: globalClassNames.icon,
+      stack: undefined,
+      text: undefined
+    },
+    style: baseStyle as IPartialComponentStyle
+  });
+
   // Styles!
-  return concatStyleSets(
+  const styleSets = concatStyleSets(
     {
       root: getFocusStyle(theme)
     },
     baseStyle,
+    propsStyle,
     {
       root: className,
       icon: globalClassNames.icon
     }
   );
+  return styleSets;
 };

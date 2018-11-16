@@ -5,7 +5,7 @@
  * Some optimizations and approximations for color space transforms and values
  *   could be interesting to explore and use here
  */
-import { hsl2rgb, IHSL, IRGB, rgb2hsl, cssColor, rgb2hex } from './colors';
+import { hsl2rgb, IHSL, IRGB, rgb2hsl, cssColor, rgbToString } from './colors';
 
 /**
  * An ISuggestionRange is an interface internal to the utilities in this file
@@ -240,7 +240,7 @@ export function getContrastingColor(color: string, backgroundColor: string, desi
     const fg = _getRgbForColor(rgbLookup, color);
     const bg = _getRgbForColor(rgbLookup, backgroundColor);
     const newFg = adjustForContrast(fg, bg, desiredRatio);
-    bgEntry[color] = rgb2hex(newFg.r, newFg.g, newFg.b);
+    bgEntry[color] = rgbToString(newFg.r, newFg.g, newFg.b);
   }
   return bgEntry[color];
 }

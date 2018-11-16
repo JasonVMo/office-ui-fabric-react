@@ -78,6 +78,13 @@ export function rgb2hsv(r: number, g: number, b: number): IHSV {
 }
 
 export function rgb2hsl(rgb: IRGB): IHSL {
+  const hsv = rgb2hsv(rgb.r, rgb.b, rgb.g);
+  const hsl = hsv2hsl(hsv.h, hsv.s, hsv.v);
+  hsl.s = hsl.s / 100;
+  hsl.l = hsl.l / 100;
+  return hsl;
+  /*
+  The following code has a bug where if b > g but red is dominant the hue goes negative
   const r = rgb.r / 255;
   const g = rgb.g / 255;
   const b = rgb.b / 255;
@@ -108,6 +115,7 @@ export function rgb2hsl(rgb: IRGB): IHSL {
   }
 
   return { h: h, s: s, l: l };
+  */
 }
 
 export function hsl2hsv(h: number, s: number, l: number): IHSV {
@@ -175,9 +183,9 @@ export function hsl2rgb(hsl: IHSL): IRGB {
   }
 
   return {
-    r: 255 * (r1 + m),
-    g: 255 * (g1 + m),
-    b: 255 * (b1 + m)
+    r: Math.round(255 * (r1 + m)),
+    g: Math.round(255 * (g1 + m)),
+    b: Math.round(255 * (b1 + m))
   };
 }
 
@@ -246,6 +254,13 @@ export function getColorFromString(inputColor: string): IColor | undefined {
     str: inputColor,
     v: v
   };
+}
+
+export function rgbToString(r: number, g: number, b: number, a: number = 100): string {
+  if (a !== 100) {
+    return `rgba(${r}, ${g}, ${b}, ${a / 100})`;
+  }
+  return `#${rgb2hex(r, g, b)}`;
 }
 
 export function getColorFromRGBA(rgba: { r: number; g: number; b: number; a: number }): IColor {

@@ -17,6 +17,15 @@ const nonStyleProps = {
   parent: true
 };
 
+const _rootStyleKey = 'root';
+
+export interface IPartialComponentStyle {
+  root: { backgroundColor?: string };
+  [key: string]: { backgroundColor?: string };
+}
+
+type IPartialStyle = IPartialComponentStyle['root'];
+
 function _stripNonStyleProps(target: object): void {
   for (const key in nonStyleProps) {
     if (nonStyleProps[key] && target[key]) {
@@ -25,7 +34,7 @@ function _stripNonStyleProps(target: object): void {
   }
 }
 
-function _resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: { backgroundColor?: string }): object {
+function _resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: IPartialStyle): object {
   const result = Object.assign({}, layer, resolveFontChoice(layer, theme.typography), resolveColors(layer, theme.palette));
   resolveTextColor(result, result.backgroundColor || (style && style.backgroundColor) || 'white');
   _stripNonStyleProps(result);
@@ -35,15 +44,16 @@ function _resolveLayerToStyle(theme: IThemeCore, layer: ILayer, style?: { backgr
 /**
  * Get a layer from the theme by name, resolving the inheritance chain as appropriate
  * @param theme - theme to extract the layer from
- * @param name - name of the layer
+ * @param input - name of the layer or a partial layer to fully resolve
  */
-export function getLayer(theme: IThemeCore, name: string): ILayer | undefined {
-  if (theme.cache[name]) {
-    return theme.cache[name];
+export function getLayer(theme: IThemeCore, input: string | ILayer): ILayer | undefined {
+  const layerName = typeof input === 'string' && input;
+  if (layerName && theme.cache[layerName]) {
+    return theme.cache[layerName];
   }
-  const layer = getLayerBase<ILayer>(theme.layers, layerConfig, name);
-  if (layer) {
-    theme.cache[name] = layer;
+  const layer = getLayerBase<ILayer>(theme.layers, layerConfig, input);
+  if (layer && layerName) {
+    theme.cache[layerName] = layer;
   }
   return layer;
 }
@@ -116,6 +126,10 @@ export function getFinalizedLayer(
   return layer;
 }
 
+function _slotBackgroundColor(slot: string, style?: IPartialComponentStyle): string | undefined {
+  return style && ((style[slot] && style[slot].backgroundColor) || (style.root && style.root.backgroundColor));
+}
+
 /**
  * This will take a layer, which optionally may have parts, and return a set of styles grouped in parts
  * @param theme - current theme, used to resolve values in the layer
@@ -123,14 +137,21 @@ export function getFinalizedLayer(
  * @param slots - list of slots to add to the component style.  Existence in the list, even as an undefined string,
  * will cause the slot to be emitted
  */
-export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer, slots?: IGetComponentStyleProps['slots']): object {
-  const rootStyle = _resolveLayerToStyle(theme, layer);
+export function resolveLayerToComponentStyle(
+  theme: IThemeCore,
+  layer: ILayer,
+  slots?: IGetComponentStyleProps['slots'],
+  style?: IPartialComponentStyle
+): object {
+  const baseRootStyle = style && style.root;
+  const rootStyle = _resolveLayerToStyle(theme, layer, baseRootStyle);
   const result = { root: rootStyle };
   if (slots && layer.slots) {
     const layerSlots = layer.slots;
     for (const slot in slots) {
       if (slots.hasOwnProperty(slot) && layerSlots[slot]) {
-        result[slot] = _resolveLayerToStyle(theme, layerSlots[slot], rootStyle);
+        const bgColor = _slotBackgroundColor(slot, result) || _slotBackgroundColor(slot, style);
+        result[slot] = _resolveLayerToStyle(theme, layerSlots[slot], { backgroundColor: bgColor });
       }
     }
   }
@@ -225,7 +246,7 @@ export interface IGetComponentStyleProps {
   /**
    * Name of the layer to query from the theme
    */
-  layerName: string;
+  layer: string | ILayer;
 
   /**
    * A constant layer to use as a baseline
@@ -260,17 +281,22 @@ export interface IGetComponentStyleProps {
   slots?: {
     [slot: string]: string | undefined;
   };
+
+  /**
+   * A baseline component style to use for extracting background color for custom coloring.  This is expected
+   * to have styles grouped under root and part names
+   */
+  style?: IPartialComponentStyle;
 }
 
 export function getComponentStyles(theme: IThemeCore, props: IGetComponentStyleProps): object {
-  const { layerName, constLayer, states, slotStates, disabled, selectors, slots } = props;
-  const themeLayer = getLayer(theme, layerName);
-  const layer = getFinalizedLayer(theme, states, slotStates, constLayer || {}, themeLayer || {});
-  const style = resolveLayerToComponentStyle(theme, layer, slots);
-  const rootStyleKey = 'root';
-  const rootStyle = style[rootStyleKey];
+  const { layer, constLayer, states, slotStates, disabled, selectors, slots } = props;
+  const themeLayer = getLayer(theme, layer);
+  const final = getFinalizedLayer(theme, states, slotStates, constLayer || {}, themeLayer || {});
+  const style = resolveLayerToComponentStyle(theme, final, slots, props.style);
+  const rootStyle = style[_rootStyleKey];
   if (selectors && !disabled) {
-    rootStyle.selectors = resolveSelectorsForLayer(theme, layer, { style: rootStyle, slots: slots });
+    rootStyle.selectors = resolveSelectorsForLayer(theme, final, { style: rootStyle, slots: slots });
   }
   return style;
 }

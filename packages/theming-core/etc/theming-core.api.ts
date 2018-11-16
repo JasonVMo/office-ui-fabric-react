@@ -37,7 +37,7 @@ export function getContrastingColor(color: string, backgroundColor: string, desi
 export function getFinalizedLayer(theme: IThemeCore, states: string | undefined, childStates: string | undefined, ...layers: ILayer[]): ILayer;
 
 // @public
-export function getLayer(theme: IThemeCore, name: string): ILayer | undefined;
+export function getLayer(theme: IThemeCore, input: string | ILayer): ILayer | undefined;
 
 // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
 // @internal
@@ -193,13 +193,14 @@ interface IFontWeights {
 interface IGetComponentStyleProps {
   constLayer?: ILayer;
   disabled?: boolean;
-  layerName: string;
+  layer: string | ILayer;
   selectors?: boolean;
   slots?: {
     [slot: string]: string | undefined;
   }
   slotStates?: string;
   states?: string;
+  style?: IPartialComponentStyle;
 }
 
 // @public (undocumented)
@@ -332,6 +333,18 @@ interface IPalette {
 }
 
 // @public (undocumented)
+interface IPartialComponentStyle {
+  // (undocumented)
+  __index: {
+    backgroundColor?: string;
+  }
+  // (undocumented)
+  root: {
+    backgroundColor?: string;
+  }
+}
+
+// @public (undocumented)
 interface IResolveSelectorsProps {
   // (undocumented)
   slots?: {
@@ -449,7 +462,7 @@ export function resolveColors(colors: IColorSlots, palette: IPalette): object;
 export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
 
 // @public
-export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer, slots?: IGetComponentStyleProps['slots']): object;
+export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer, slots?: IGetComponentStyleProps['slots'], style?: IPartialComponentStyle): object;
 
 // @public (undocumented)
 export function resolveSelectorsForLayer(theme: IThemeCore, layer: ILayer, props: IResolveSelectorsProps): object;
@@ -472,6 +485,9 @@ export function rgb2hsl(rgb: IRGB): IHSL;
 
 // @public (undocumented)
 export function rgb2hsv(r: number, g: number, b: number): IHSV;
+
+// @public (undocumented)
+export function rgbToString(r: number, g: number, b: number, a?: number): string;
 
 // WARNING: Unsupported export: ILayerContentsFlatProps
 // WARNING: Unsupported export: ILayerContents

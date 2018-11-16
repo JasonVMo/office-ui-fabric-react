@@ -1,6 +1,7 @@
 import { IComponent, IStyleableComponentProps } from '../../Foundation';
 import { IStyle } from '../../Styling';
 import { IIconProps, IContextualMenuProps, IFontWeight, IRefObject } from 'office-ui-fabric-react';
+import { ILayer } from '@uifabric/theming-core';
 
 export type IButtonComponent = IComponent<IButtonProps, IButtonViewProps, IButtonStyles>;
 
@@ -11,7 +12,7 @@ export type IButtonVariants = 'baseVariant' | 'primary' | 'circular';
 
 export type IButtonSlots = 'root' | 'stack' | 'text' | 'icon' | 'menuIcon';
 
-export interface IButton {}
+export interface IButton { }
 
 export interface IButtonProps extends IStyleableComponentProps<IButtonProps, IButtonStyles> {
   as?: keyof JSX.IntrinsicElements;
@@ -31,7 +32,7 @@ export interface IButtonProps extends IStyleableComponentProps<IButtonProps, IBu
   onClick?: (ev: React.MouseEvent<HTMLElement>) => void;
   menu?: React.ReactType<IContextualMenuProps>;
   icon?: string | IIconProps | JSX.Element;
-  styleVariables?: IButtonStyleVariables;
+  styleVariables?: ILayer;
 }
 
 export interface IButtonStyleVariablesTypes {
