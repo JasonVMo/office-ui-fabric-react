@@ -62,8 +62,8 @@ export interface IThemeRegistry<ITheme, IThemeDefinition> {
 /**
  * Creates a theme registry object which caches theme information and provides typed functions
  * for working with themes in the registry.
- * @param platformDefaults A fully defined theme with default values for the given platform
- * @param resolver A function which takes a partial theme, a fully defined parent theme, and
+ * @param platformDefaults - A fully defined theme with default values for the given platform
+ * @param resolver - A function which takes a partial theme, a fully defined parent theme, and
  * produces a fully resolved theme.
  */
 export function createThemeRegistry<ITheme, IThemeDefinition>(

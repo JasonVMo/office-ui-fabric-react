@@ -1,5 +1,5 @@
 import { IThemeCore, ILayer, ILayers } from '../interfaces/index';
-import { getLayerBase, mergeLayerCollectionBase, mergeLayerBase, IThemeLayersConfig, addMixinToLayerBase } from '@uifabric/foundation';
+import { getLayerBase, mergeLayerCollectionBase, mergeLayerBase, IThemeLayersConfig, addMixinToLayerBase } from '../generics/themeLayers';
 import { resolveColors, resolveTextColor } from './resolvers';
 import { resolveFontChoice } from './typography';
 

@@ -1,7 +1,7 @@
 import { IPalette } from './IPalette';
 import { ITypography, IPartialTypography } from './ITypography';
 import { ILayers, ILayerContents } from './ILayers';
-import { IThemeLayersBase } from '@uifabric/foundation';
+import { IThemeLayersBase } from '../generics/themeLayers';
 
 export interface IThemeCore {
   palette: IPalette;

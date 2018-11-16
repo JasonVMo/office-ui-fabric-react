@@ -1,7 +1,7 @@
 import { IColorSlots } from './IColorSlots';
 import { IFontChoice } from './ITypography';
 import { ISpace, IOtherProps } from './ISpace';
-import { IThemeLayerBase, IThemeLayersBase } from '@uifabric/foundation';
+import { IThemeLayerBase, IThemeLayersBase } from '../generics/themeLayers';
 
 /**
  * Things to do tonight

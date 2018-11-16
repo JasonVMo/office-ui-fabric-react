@@ -10,6 +10,9 @@ export function contrastRatio(relLumA: number, relLumB: number): number;
 // @public (undocumented)
 export function createThemeCore(): IThemeCore;
 
+// @public
+export function createThemeRegistry<ITheme, IThemeDefinition>(platformDefaults: ITheme, resolver: IThemeResolver<ITheme, IThemeDefinition>): IThemeRegistry<ITheme, IThemeDefinition>;
+
 // @public (undocumented)
 export function createTypography(localeCode: string | null): ITypography;
 
@@ -489,6 +492,16 @@ export function rgb2hsv(r: number, g: number, b: number): IHSV;
 // @public (undocumented)
 export function rgbToString(r: number, g: number, b: number, a?: number): string;
 
+// WARNING: Unsupported export: MAX_COLOR_SATURATION
+// WARNING: Unsupported export: MAX_COLOR_HUE
+// WARNING: Unsupported export: MAX_COLOR_VALUE
+// WARNING: Unsupported export: MAX_COLOR_RGBA
+// WARNING: Unsupported export: COLOR_VALUES
+// WARNING: Unsupported export: DefaultPalette
+// WARNING: Unsupported export: DefaultColorSlots
+// WARNING: Unsupported export: DefaultFontSizes
+// WARNING: Unsupported export: DefaultFontWeights
+// WARNING: Unsupported export: DefaultFontVariants
 // WARNING: Unsupported export: ILayerContentsFlatProps
 // WARNING: Unsupported export: ILayerContents
 // WARNING: Unsupported export: ILayer
@@ -496,15 +509,5 @@ export function rgbToString(r: number, g: number, b: number, a?: number): string
 // WARNING: Unsupported export: IPartialThemeCore
 // WARNING: Unsupported export: IFontWeight
 // WARNING: Unsupported export: IPartialTypography
-// WARNING: Unsupported export: MAX_COLOR_SATURATION
-// WARNING: Unsupported export: MAX_COLOR_HUE
-// WARNING: Unsupported export: MAX_COLOR_VALUE
-// WARNING: Unsupported export: MAX_COLOR_RGBA
-// WARNING: Unsupported export: COLOR_VALUES
 // WARNING: Unsupported export: DefaultTypography
-// WARNING: Unsupported export: DefaultPalette
-// WARNING: Unsupported export: DefaultColorSlots
-// WARNING: Unsupported export: DefaultFontSizes
-// WARNING: Unsupported export: DefaultFontWeights
-// WARNING: Unsupported export: DefaultFontVariants
 // (No @packagedocumentation comment for this package)
