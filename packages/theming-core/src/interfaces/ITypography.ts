@@ -1,5 +1,43 @@
-import { IFontWeight } from '@uifabric/merge-styles';
-export { IFontWeight } from '@uifabric/merge-styles';
+/**
+ * ICSSRule is copied from the merge-styles package.
+ * It is unclear if this is a general construct that should remain in theming-core
+ *
+ * @internal This is an experimental interface and will be changed post design review
+ */
+export type ICSSRule = 'initial' | 'inherit' | 'unset';
+
+/**
+ * IFontWeight is copied from the merge-styles package.
+ * We use an exact copy to satisfy ts's structural subtyping rules
+ * These seem like acceptable values, but are subject to change
+ * Especially depending on what is done with ICSSRule
+ *
+ * @internal This is an experimental interface and will be changed post design review
+ */
+export type IFontWeight =
+  | ICSSRule
+  | 'normal'
+  | 'bold'
+  | 'bolder'
+  | 'lighter'
+  | '100'
+  | 100
+  | '200'
+  | 200
+  | '300'
+  | 300
+  | '400'
+  | 400
+  | '500'
+  | 500
+  | '600'
+  | 600
+  | '700'
+  | 700
+  | '800'
+  | 800
+  | '900'
+  | 900;
 
 /**
  * @internal This is an experimental interface and will be changed post design review.

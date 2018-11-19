@@ -507,6 +507,7 @@ export function rgbToString(r: number, g: number, b: number, a?: number): string
 // WARNING: Unsupported export: ILayer
 // WARNING: Unsupported export: ILayers
 // WARNING: Unsupported export: IPartialThemeCore
+// WARNING: Unsupported export: ICSSRule
 // WARNING: Unsupported export: IFontWeight
 // WARNING: Unsupported export: IPartialTypography
 // WARNING: Unsupported export: DefaultTypography
