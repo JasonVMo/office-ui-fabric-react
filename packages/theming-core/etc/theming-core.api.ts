@@ -347,6 +347,21 @@ interface IPartialComponentStyle {
   }
 }
 
+// WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
+// @internal
+interface IRawFontStyle {
+  // (undocumented)
+  fontFamily?: string | undefined;
+  // (undocumented)
+  fontSize?: number | string | undefined;
+  // (undocumented)
+  fontWeight?: IFontWeight;
+  // (undocumented)
+  MozOsxFontSmoothing?: 'none' | 'antialiased' | 'grayscale' | 'subpixel-antialiased' | undefined;
+  // (undocumented)
+  WebkitFontSmoothing?: 'none' | 'antialiased' | 'grayscale' | 'subpixel-antialiased' | undefined;
+}
+
 // @public (undocumented)
 interface IResolveSelectorsProps {
   // (undocumented)
@@ -462,7 +477,7 @@ export function relativeLuminance(r: number, g: number, b: number): number;
 export function resolveColors(colors: IColorSlots, palette: IPalette): object;
 
 // @public
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle;
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawFontStyle;
 
 // @public
 export function resolveLayerToComponentStyle(theme: IThemeCore, layer: ILayer, slots?: IGetComponentStyleProps['slots'], style?: IPartialComponentStyle): object;

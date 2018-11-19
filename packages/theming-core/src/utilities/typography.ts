@@ -1,7 +1,6 @@
-import { ITypography, IFontChoice, IFontFamilies } from '../interfaces/ITypography';
+import { IRawFontStyle, ITypography, IFontChoice, IFontFamilies } from '../interfaces/ITypography';
 import { DefaultFontSizes, DefaultFontWeights, DefaultFontVariants } from '../defaults/index';
 import { getLanguage } from '@uifabric/utilities';
-import { IRawStyle } from '@uifabric/merge-styles';
 
 // Fallback fonts, if specified system or web fonts are unavailable.
 const FontFamilyFallbacks = `'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif`;
@@ -141,7 +140,7 @@ function _sanitizeObject(src: object): object {
  * only return values for things specified in the font choice.  If font is empty, it will return an
  * empty IRawStyle
  */
-export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawStyle {
+export function resolveFontChoice(fontChoice: IFontChoice, typography: ITypography): IRawFontStyle {
   const input: IFontChoice = _sanitizeObject(fontChoice);
   const variants = typography.variants;
   const variant = input.fontVariant;

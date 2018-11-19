@@ -40,6 +40,21 @@ export type IFontWeight =
   | 900;
 
 /**
+ * IRawFontStyle acts as a subset of IRawStyle from the merge-styles package
+ * By taking advantage of ts's structural subtyping, instance of IRawFontStyle
+ * are also instances of IRawStyle
+ *
+ * @internal This is an experimental interface and will be changed post design review
+ */
+export interface IRawFontStyle {
+  fontFamily?: string | undefined;
+  fontSize?: number | string | undefined;
+  fontWeight?: IFontWeight;
+  MozOsxFontSmoothing?: 'none' | 'antialiased' | 'grayscale' | 'subpixel-antialiased' | undefined;
+  WebkitFontSmoothing?: 'none' | 'antialiased' | 'grayscale' | 'subpixel-antialiased' | undefined;
+}
+
+/**
  * @internal This is an experimental interface and will be changed post design review.
  */
 export interface IFontFamilies {
