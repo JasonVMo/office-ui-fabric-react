@@ -1,5 +1,5 @@
 import { IPartialThemeCore, IThemeCore, ITypography, IColorSlots, IPalette } from '../interfaces/index';
-import { merge } from '@uifabric/utilities';
+import { merge } from './merge';
 import { mergeLayerCollections } from './layers';
 import { getContrastingColor } from '../colors/index';
 
