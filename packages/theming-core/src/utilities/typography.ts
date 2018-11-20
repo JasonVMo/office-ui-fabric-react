@@ -1,6 +1,5 @@
 import { IRawFontStyle, ITypography, IFontChoice, IFontFamilies } from '../interfaces/ITypography';
 import { DefaultFontSizes, DefaultFontWeights, DefaultFontVariants } from '../defaults/index';
-import { getLanguage } from '@uifabric/utilities';
 
 // Fallback fonts, if specified system or web fonts are unavailable.
 const FontFamilyFallbacks = `'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif`;
@@ -113,7 +112,11 @@ export function createTypography(localeCode: string | null): ITypography {
   };
 }
 
-export const DefaultTypography: ITypography = createTypography(getLanguage());
+/**
+ * DefaultTypogrpahy can (for the time being) use the default wester-european font families
+ * This was done to remove the dependency on uifabric/utilities
+ */
+export const DefaultTypography: ITypography = createTypography(null);
 
 function _sanitizeObject(src: object): object {
   const result = {};
