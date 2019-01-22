@@ -12,19 +12,15 @@
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "moduleResolution": "node",
     "preserveConstEnums": true,
-    "lib": [
-      "es2017",
-      "dom"
-    ],
-    "types": [
-      "jest",
-      "webpack-env"
-    ]
+    "lib": ["es2017", "dom"],
+    "types": ["jest", "webpack-env"],
+    "paths": {
+      "@uifabric/theming-core/lib/*": ["./src/*"],
+      "@uifabric/theming-core": ["./src"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
