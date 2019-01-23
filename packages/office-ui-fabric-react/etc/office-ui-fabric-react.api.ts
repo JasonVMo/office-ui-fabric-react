@@ -9732,6 +9732,9 @@ interface IRGB {
 
 // @public (undocumented)
 interface IScheme {
+  // WARNING: Because this definition is explicitly marked as @internal, an underscore prefix ("_") should be added to its name
+  // @internal
+  deprecatedCommentTags?: boolean;
   disableGlobalClassNames: boolean;
   // (undocumented)
   effects: IEffects;
