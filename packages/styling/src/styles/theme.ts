@@ -42,7 +42,7 @@ if (!Customizations.getSettings([ThemeSettingName]).theme) {
  * @param depComments - Whether to include deprecated tags as comments for deprecated slots.
  */
 export function getTheme(depComments: boolean = false): ITheme {
-  _updateDepComments(depComments);
+  _updateDepComments(depComments, true);
   return _registry.getTheme();
 }
 
@@ -181,8 +181,8 @@ function _resolveTheme(theme: IPartialTheme | undefined, parent: ITheme): ITheme
   };
 }
 
-function _updateDepComments(depComments: boolean): void {
-  if (depComments !== !!_platformTheme.deprecatedCommentTags) {
+function _updateDepComments(depComments: boolean, onlyIfSpecified?: boolean): void {
+  if (depComments !== !!_platformTheme.deprecatedCommentTags && (!onlyIfSpecified || depComments)) {
     _platformTheme.deprecatedCommentTags = depComments;
     _registry.updatePlatformDefaults(_platformTheme);
   }
